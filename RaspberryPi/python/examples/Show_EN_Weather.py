@@ -146,7 +146,7 @@ for i in range(0, 6):
             Wea[i], font = font25, fill = "BLUE")
             
     PNG = Image.open("Weather/"+ str(i) +".png")	
-    Blackimage.paste(PNG, (W_Proportion*i+73, H_Proportion + 80)) 
+    Otherimage.paste(PNG, (W_Proportion*i+73, H_Proportion + 80)) 
 
     Black.text((W_Proportion*i+117-len(TemHigh[i]+u'°F')*15,H_Proportion + 170), 
             TemHigh[i]+u'°F', font = font45, fill = "BLUE")

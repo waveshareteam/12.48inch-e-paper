@@ -110,9 +110,9 @@ Info:
 static void DEV_GPIOConfig(void)
 {
     //output
-    DEV_GPIO_Mode(EPD_SCK_PIN, 1);
+	DEV_GPIO_Mode(EPD_SCK_PIN, 1);
     DEV_GPIO_Mode(EPD_MOSI_PIN, 1);
-
+	
     DEV_GPIO_Mode(EPD_M1_CS_PIN, 1);
     DEV_GPIO_Mode(EPD_S1_CS_PIN, 1);
     DEV_GPIO_Mode(EPD_M2_CS_PIN, 1);
@@ -129,6 +129,20 @@ static void DEV_GPIOConfig(void)
     DEV_GPIO_Mode(EPD_S1_BUSY_PIN, 0);
     DEV_GPIO_Mode(EPD_M2_BUSY_PIN, 0);
     DEV_GPIO_Mode(EPD_S2_BUSY_PIN, 0);
+	
+	DEV_Digital_Write(EPD_SCK_PIN, 0);
+    DEV_Digital_Write(EPD_MOSI_PIN, 0);
+	
+	DEV_Digital_Write(EPD_M1_CS_PIN, 1);
+    DEV_Digital_Write(EPD_S1_CS_PIN, 1);
+    DEV_Digital_Write(EPD_M2_CS_PIN, 1);
+    DEV_Digital_Write(EPD_S2_CS_PIN, 1);
+
+    DEV_Digital_Write(EPD_M2S2_RST_PIN, 0);
+    DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
+    DEV_Digital_Write(EPD_M2S2_DC_PIN, 1);
+    DEV_Digital_Write(EPD_M1S1_DC_PIN, 1);
+	
 }
 
 /******************************************************************************
@@ -156,16 +170,14 @@ UBYTE DEV_ModuleInit(void)
 #elif USE_DEV_LIB
     printf("Write and read GPIO  \r\n");
 #endif
-
-    DEV_GPIOConfig();
-
     //software spi configure
     software_spi.SCLK_PIN = EPD_SCK_PIN;
     software_spi.MOSI_PIN = EPD_MOSI_PIN;
     software_spi.Mode = Mode0;
     software_spi.Type = Master;
     software_spi.Clock = 10; 
-
+	
+	DEV_GPIOConfig();
     return 0;
 }
 
@@ -308,12 +320,20 @@ Info:
 ******************************************************************************/
 void DEV_ModuleExit(void)
 {
-#ifdef USE_BCM2835_LIB
+	DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
+	DEV_Digital_Write(EPD_M2S2_RST_PIN, 0);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
+    DEV_Digital_Write(EPD_M2S2_DC_PIN, 0);
+    DEV_Digital_Write(EPD_M1S1_DC_PIN, 0);
+    DEV_Digital_Write(EPD_S1_CS_PIN, 1);
+    DEV_Digital_Write(EPD_S2_CS_PIN, 1);
+    DEV_Digital_Write(EPD_M1_CS_PIN, 1);
+    DEV_Digital_Write(EPD_M2_CS_PIN, 1);
+#ifdef USE_BCM2835_LIB
 	bcm2835_close();
 #elif USE_WIRINGPI_LIB
-    DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
+
 #elif USE_DEV_LIB
-    DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
+
 #endif
 }

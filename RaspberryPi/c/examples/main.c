@@ -17,8 +17,8 @@ int main(void)
     // Exception handling:ctrl + c
     signal(SIGINT, Handler);
     
-    EPD_12in48_test();
-    // EPD_12in48B_test();
+    // EPD_12in48_test();
+    EPD_12in48B_test();
     
     
     DEV_ModuleExit();

@@ -12,6 +12,7 @@ int EPD_12in48_test(void)
     } else {
         printf("e-Paper init...\r\n");
     }
+	printf("EPD_12in48_Clear \r\n");
     EPD_12in48_Clear();
 
     //Create a new image cache

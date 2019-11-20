@@ -63,6 +63,7 @@ UBYTE EPD_12in48_Init(void)
     EPD_Reset();
 
     //panel setting
+	EPD_M1_SendCommand(0x00);
     EPD_M1_SendCommand(0x00);
     EPD_M1_SendData(0x1f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
     EPD_S1_SendCommand(0x00);
@@ -118,7 +119,7 @@ UBYTE EPD_12in48_Init(void)
 
     EPD_M1S1M2S2_SendCommand(0xE3);
     EPD_M1S1M2S2_SendData(0x00);
-
+	
     EPD_M1_ReadTemperature();
     return 0;
 }
@@ -143,21 +144,19 @@ void EPD_12in48_Clear(void)
             EPD_M1_SendData(0xff);
         }
     }
-
     // S1 part 656*492
     EPD_S1_SendCommand(0x10);
     for(y = 492; y < 984; y++){
         for(x = 81; x < 163; x++) {
             EPD_S1_SendData(0xff);
         }
-    }        
+    }
     EPD_S1_SendCommand(0x13);
     for(y = 492; y < 984; y++){
         for(x = 81; x < 163; x++) {
             EPD_S1_SendData(0xff);
         }
     }
-
     // M2 part 656*492
     EPD_M2_SendCommand(0x10);
     for(y = 0; y < 492; y++){
@@ -171,7 +170,6 @@ void EPD_12in48_Clear(void)
             EPD_M2_SendData(0xff);
         }
     }
-
     // S2 part 648*492
     EPD_S2_SendCommand(0x10);
     for(y = 0; y < 492; y++){
@@ -264,9 +262,12 @@ parameter:
 ******************************************************************************/
 static void EPD_Reset(void)
 {
+	DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
+    DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
+    DEV_Delay_ms(200);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 0);
-    DEV_Delay_ms(15);
+    DEV_Delay_ms(1);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
     DEV_Delay_ms(200);

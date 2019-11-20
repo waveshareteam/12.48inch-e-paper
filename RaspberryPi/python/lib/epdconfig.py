@@ -87,7 +87,6 @@ def module_init():
     GPIO.setup(EPD_MOSI_PIN, GPIO.OUT)
     
     logging.debug("python call wiringPi Lib")
-    spi.DEV_ModuleInit()
     
     GPIO.setup(EPD_M2S2_RST_PIN, GPIO.OUT)    
     GPIO.setup(EPD_M1S1_RST_PIN, GPIO.OUT)
@@ -103,6 +102,28 @@ def module_init():
     GPIO.setup(EPD_M1_BUSY_PIN, GPIO.IN)
     GPIO.setup(EPD_M2_BUSY_PIN, GPIO.IN)
     
+    digital_write(EPD_M1_CS_PIN, 1)
+    digital_write(EPD_S1_CS_PIN, 1)
+    digital_write(EPD_M2_CS_PIN, 1)
+    digital_write(EPD_S2_CS_PIN, 1)
+    
+    digital_write(EPD_M2S2_RST_PIN, 0)
+    digital_write(EPD_M1S1_RST_PIN, 0)
+    digital_write(EPD_M2S2_DC_PIN, 1)
+    digital_write(EPD_M1S1_DC_PIN, 1)
+
+    spi.DEV_ModuleInit()
+
+def module_exit():
+    digital_write(EPD_M2S2_RST_PIN, 0)
+    digital_write(EPD_M1S1_RST_PIN, 0)
+    digital_write(EPD_M2S2_DC_PIN, 0)
+    digital_write(EPD_M1S1_DC_PIN, 0)
+    digital_write(EPD_S1_CS_PIN, 1)
+    digital_write(EPD_S2_CS_PIN, 1)
+    digital_write(EPD_M1_CS_PIN, 1)
+    digital_write(EPD_M2_CS_PIN, 1)
+
 def spi_readbyte(Reg):
     GPIO.setup(EPD_MOSI_PIN, GPIO.IN)
     j=0

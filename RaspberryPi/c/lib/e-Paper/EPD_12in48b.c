@@ -316,6 +316,9 @@ parameter:
 ******************************************************************************/
 static void EPD_Reset(void)
 {
+	DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
+    DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
+    DEV_Delay_ms(200);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 0);
     DEV_Delay_ms(10);

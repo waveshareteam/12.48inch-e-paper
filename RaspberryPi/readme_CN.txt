@@ -106,7 +106,7 @@ python
     设置输出日志等级
     logging.basicConfig(level=logging.INFO)
         日志等级
-        DEBUG           详细信息，典型地调试问题时会输出详细的debug信息。
+        DEBUG           详细信息，典型地调试问题时会感兴趣。 详细的debug信息。
         INFO            证明事情按预期工作。 关键事件。
         WARNING         表明发生了一些意外，或者不久的将来会发生问题（如‘磁盘满了’）。软件还是在正常工作。
         ERROR           由于更严重的问题，软件已不能执行一些功能了。 一般错误消息。

@@ -274,6 +274,9 @@ class EPD(object):
         self.TurnOnDisplay()
         
     def Reset(self):
+        epdconfig.digital_write(self.EPD_M1S1_RST_PIN, 1) 
+        epdconfig.digital_write(self.EPD_M2S2_RST_PIN, 1) 
+        time.sleep(0.2) 
         epdconfig.digital_write(self.EPD_M1S1_RST_PIN, 0) 
         epdconfig.digital_write(self.EPD_M2S2_RST_PIN, 0) 
         time.sleep(0.01) 
@@ -288,6 +291,8 @@ class EPD(object):
         self.M1S1M2S2_SendCommand(0X07)   	
         self.M1S1M2S2_SendData(0xA5) 
         time.sleep(0.3) 
+        print("module_exit")
+        epdconfig.module_exit()
 
     def TurnOnDisplay(self):
         self.M1M2_SendCommand(0x04)  
