@@ -15,7 +15,7 @@ int EPD_12in48_test(void)
 
 #if 1   // show image for array   
     printf("show image for array\r\n");
-    EPD_12in48_Display648x492(gImage_b);
+    EPD_12in48_Display(gImage_b);
     DEV_Delay_ms(500);
 #endif
 		
@@ -56,8 +56,8 @@ int EPD_12in48_test(void)
     Paint_DrawString_EN(10, 20, "hello world", &Font12, WHITE, BLACK);
     Paint_DrawNum(10, 33, 123456789, &Font12, BLACK, WHITE);
     Paint_DrawNum(10, 50, 987654321, &Font16, WHITE, BLACK);
-    Paint_DrawString_CN(130, 0, " ÄãºÃabc", &Font12CN, BLACK, WHITE);
-    Paint_DrawString_CN(130, 20, "Î¢Ñ©µç×Ó", &Font24CN, WHITE, BLACK);
+    Paint_DrawString_CN(130, 0, " ï¿½ï¿½ï¿½abc", &Font12CN, BLACK, WHITE);
+    Paint_DrawString_CN(130, 20, "Î¢Ñ©ï¿½ï¿½ï¿½ï¿½", &Font24CN, WHITE, BLACK);
 
     printf("EPD_Display\r\n");
     EPD_12in48_Display648x300(BlackImage);
