@@ -399,6 +399,7 @@ class EPD(object):
             self.M1_SendCommand(0x71)
             busy = epdconfig.digital_read(self.EPD_M1_BUSY_PIN)
             busy = not(busy & 0x01)
+        time.sleep(0.2)
 
     def M2_ReadBusy(self):
         self.M2_SendCommand(0x71)
@@ -409,6 +410,7 @@ class EPD(object):
             self.M2_SendCommand(0x71)
             busy = epdconfig.digital_read(self.EPD_M2_BUSY_PIN)
             busy =not(busy & 0x01)
+        time.sleep(0.2)
 
     def S1_ReadBusy(self):
         self.S1_SendCommand(0x71)
@@ -419,6 +421,7 @@ class EPD(object):
             self.S1_SendCommand(0x71)
             busy = epdconfig.digital_read(self.EPD_S1_BUSY_PIN)
             busy = not(busy & 0x01)
+        time.sleep(0.2)
 
     def S2_ReadBusy(self):
         self.S2_SendCommand(0x71)
@@ -429,6 +432,7 @@ class EPD(object):
             self.S2_SendCommand(0x71)
             busy = epdconfig.digital_read(self.EPD_S2_BUSY_PIN)
             busy = not(busy & 0x01)
+        time.sleep(0.2)
 
 
     def M1_ReadTemperature(self):
