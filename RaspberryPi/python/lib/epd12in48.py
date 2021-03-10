@@ -138,13 +138,13 @@ class EPD(object):
         start = time.perf_counter()
 
         # Check if we need to rotate the image
-         imwidth, imheight = image.size
-         if(imwidth == self.width and imheight == self.height):
-             image_temp = image
-         elif(imwidth == self.height and imheight == self.width):
-             image_temp = image.rotate(90, expand=True)
-         else:
-             logging.warning("Invalid image dimensions: %d x %d, expected %d x %d" % (imwidth, imheight, self.width, self.height))
+        imwidth, imheight = image.size
+        if(imwidth == self.width and imheight == self.height):
+            image_temp = image
+        elif(imwidth == self.height and imheight == self.width):
+            image_temp = image.rotate(90, expand=True)
+        else:
+            logging.warning("Invalid image dimensions: %d x %d, expected %d x %d" % (imwidth, imheight, self.width, self.height))
 
         image_monocolor = image_temp.convert('1')
         buf = bytearray(image_monocolor.tobytes('raw'))
