@@ -20,18 +20,13 @@ if os.path.exists(libdir):
 from Weather import Get_EN_Weather
 import time
 
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
-from PIL import ImageColor
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont, ImageColor, Image
 
 if (len(sys.argv) == 1):
     import epd12in48
     print ('epd12in48')
     Color_Type   = 1
-    Inage_WIDTH  = epd12in48.EPD_WIDTH
-    Inage_HEIGHT = epd12in48.EPD_HEIGHT
+    Inage_WIDTH, Inage_HEIGHT  = epd12in48.EPD_WIDTH, epd12in48.EPD_HEIGHT
     epd = epd12in48.EPD()
     
 elif(sys.argv[1] == 'help' or sys.argv[1] == 'HELP'):
@@ -43,8 +38,7 @@ elif(sys.argv[1] == 'B' or sys.argv[1] == 'b'):
     import epd12in48b
     print ('epd12in48b')
     Color_Type   = 2
-    Inage_WIDTH  = epd12in48b.EPD_WIDTH
-    Inage_HEIGHT = epd12in48b.EPD_HEIGHT
+    Inage_WIDTH, Inage_HEIGHT  = epd12in48b.EPD_WIDTH, epd12in48b.EPD_HEIGHT
     epd = epd12in48b.EPD()
 
 print ("Please wait, it will take some time to download the data!!!!")  
@@ -90,14 +84,13 @@ font70 = ImageFont.truetype(picdir+"/Font.ttc",  70)
 font80 = ImageFont.truetype(picdir+"/Font.ttc",  80)
 font110 = ImageFont.truetype(picdir+"/Font.ttc", 110)
 
-W_Proportion = int(Inage_WIDTH/6)
-H_Proportion = int(Inage_HEIGHT/3)
+W_Proportion, H_Proportion = int(Inage_WIDTH/6), int(Inage_HEIGHT/3)
 
 Weather = Get_EN_Weather.Weather()
 
 
-Week = Weather.Extract_Week()
-Date = Weather.Extract_Date()
+Week, Date = Weather.Extract_Week(), Weather.Extract_Date()
+
 Wea  = Weather.Extract_Wea()
 TemHigh  = Weather.Extract_TemHigh()
 TemLow  = Weather.Extract_TemLow()
@@ -175,8 +168,7 @@ for i in range(0, 24):
     temp[i]  = int(TemHourly[i])
 
 temp.sort()
-tem_max = int(temp[len(temp)-1]/3.0+1)*3
-tem_min = int(temp[0]/3)*3
+tem_max, tem_min = int(temp[len(temp)-1]/3.0+1)*3, int(temp[0]/3)*3
 tem_Proportion =  int(240/(tem_max - tem_min))
 
 s = 1
