@@ -5,20 +5,24 @@
 #include "imagedata.h"
 #include <stdlib.h>
 
+int Version = 1;
+
 /* Entry point ----------------------------------------------------------------*/
 void setup()
 {
-    // Serial port initialization
-    Serial.begin(115200);
-    delay(10);
+
+    DEV_Delay_ms(500);
 
     // SPI initialization
     DEV_ModuleInit();
-
+	
+	printf("Init \r\n");
     DEV_TestLED();
     EPD_12in48B_Init();
-    EPD_12in48B_Clear();
 
+	printf("Clear \r\n");
+    EPD_12in48B_Clear();
+	printf("NewImage \r\n");
     // 1.Apply for a drawing cache
     UBYTE *Image = NULL;
     UWORD xsize = 1304, ysize = 984 / 2;//1304 x 492// Not enough memory to allocate 1304*984 of memory
@@ -83,7 +87,9 @@ void setup()
     DEV_Delay_ms(2000);
 
     //clear for Long-term preservation
+	printf("clear... \r\n");
     EPD_12in48B_Clear();
+	printf("sleep... \r\n");
     EPD_12in48B_Sleep();
 
     free(Image);

@@ -17,7 +17,7 @@ import sys
 import re
 import requests# sudo python3 -m pip install requests
 
-ur ='https://www.tianqiapi.com/api/?version=v1&&appid=1001&appsecret=5578'
+ur ='https://www.tianqiapi.com/api/?version=v1&&appid=[0]&appsecret=[0]'
 
 def Get_Html(Url):#Timeout retry (failed if not successful 3 times)
     i = 0

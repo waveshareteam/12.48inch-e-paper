@@ -332,7 +332,7 @@ static void EPD_Reset(void)
     DEV_Delay_ms(200);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 0);
-    DEV_Delay_ms(20);
+    DEV_Delay_ms(10);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
     DEV_Delay_ms(200);
@@ -533,12 +533,12 @@ static void EPD_M1_ReadTemperature(void)
     DEV_Delay_us(5);
 
     UBYTE temp;
-    temp = DEV_SPI_ReadByte(0x00);
-    DEV_Digital_Write(EPD_M1_CS_PIN, 1);
-    Debug("Read Temperature Reg:\r\n");
-    Debug(temp);
+    // temp = DEV_SPI_ReadByte(0x00);
+    // DEV_Digital_Write(EPD_M1_CS_PIN, 1);
+    // Debug("Read Temperature Reg:\r\n");
+    // Debug(temp);
 
-    // temp = 19;
+    temp = 19;
     EPD_M1S1M2S2_SendCommand(0xe0);//Cascade setting
     EPD_M1S1M2S2_SendData(0x03);
     EPD_M1S1M2S2_SendCommand(0xe5);//Force temperature

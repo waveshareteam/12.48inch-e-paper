@@ -124,7 +124,7 @@
 UBYTE DEV_ModuleInit(void);
 void DEV_Delay_us(UWORD xus);
 void DEV_TestLED(void);
-void DEV_SPI_WriteByte(UBYTE value);
+void DEV_SPI_WriteByte(UBYTE data);
 UBYTE DEV_SPI_ReadByte(char x);
 
 #endif

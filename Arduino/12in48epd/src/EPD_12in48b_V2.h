@@ -1,12 +1,12 @@
 /*****************************************************************************
-* | File      	:   ImageData.h
+* | File      	:	EPD_12in48b_V2.h
 * | Author      :   Waveshare team
-* | Function    :	
+* | Function    :   Electronic paper driver
+* | Info        :
 *----------------
 * |	This version:   V1.0
-* | Date        :   2018-10-23
+* | Date        :   2022-09-13
 * | Info        :
-*
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files (the "Software"), to deal
@@ -26,15 +26,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-
 ******************************************************************************/
+#ifndef _EPD_12IN48B_V2_H_
+#define _EPD_12IN48B_V2_H_
 
-#ifndef _IMAGEDATA_H_
-#define _IMAGEDATA_H_
-extern const unsigned char gImage_648x492[];
-extern const unsigned char gImage_b[];
-extern const unsigned char gImage_ry[];
+#include "DEV_Config.h"
+
+// Display resolution
+#define EPD_MAX_WIDTH       1304
+#define EPD_MAX_HEIGHT      984
+
+#define EPD_MAX_BYTE       160392   // (1304/8 * 984)
+
+#define EPD_M1_WIDTH       648
+#define EPD_M1_HEIGHT      (EPD_MAX_HEIGHT / 2)
+#define EPD_S1_WIDTH       (EPD_MAX_WIDTH - 648)    //656
+#define EPD_S1_HEIGHT      (EPD_MAX_HEIGHT / 2)
+#define EPD_M2_WIDTH       (EPD_MAX_WIDTH - 648)    //656
+#define EPD_M2_HEIGHT      (EPD_MAX_HEIGHT / 2)
+#define EPD_S2_WIDTH       648
+#define EPD_S2_HEIGHT      (EPD_MAX_HEIGHT / 2)
+
+UBYTE EPD_12in48B_V2_Init(void);
+void EPD_12in48B_V2_Clear(void);
+void EPD_12in48B_V2_ClearBlack(void);
+void EPD_12in48B_V2_ClearRed(void);
+void EPD_12in48B_V2_Display(void);
+void EPD_12in48B_V2_TurnOnDisplay(void);
+void EPD_12in48B_V2_Sleep(void);
+
 #endif
-/* FILE END */
-
-

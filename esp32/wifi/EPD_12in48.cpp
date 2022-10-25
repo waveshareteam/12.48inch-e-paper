@@ -184,7 +184,7 @@ void EPD_12in48_Clear(void)
             EPD_12in48_S2_SendData(0xff);
         }
     Serial.print("over ...\r\n");
-    // EPD_12in48_TurnOnDisplay();
+    EPD_12in48_TurnOnDisplay();
 }
 
 void EPD_12in48_cmdS2(void);
@@ -244,10 +244,10 @@ void EPD_12in48_TurnOnDisplay(void)
     Serial.print("EPD_12in48_M1_ReadBusy ...\r\n");
     EPD_12in48_S1_ReadBusy();
     Serial.print("EPD_12in48_M2_ReadBusy ...\r\n");
-    // EPD_12in48_M2_ReadBusy();
-    // Serial.print("EPD_12in48_S1_ReadBusy ...\r\n");
-    // EPD_12in48_S2_ReadBusy();
-    // Serial.print("EPD_12in48_S2_ReadBusy ...\r\n");
+    EPD_12in48_M2_ReadBusy();
+    Serial.print("EPD_12in48_S1_ReadBusy ...\r\n");
+    EPD_12in48_S2_ReadBusy();
+    Serial.print("EPD_12in48_S2_ReadBusy ...\r\n");
 }
 
 /******************************************************************************
@@ -272,7 +272,7 @@ static void EPD_12in48_Reset(void)
 {
     DEV_Digital_Write(EPD_12in48_M1S1_RST_PIN, 0);
     DEV_Digital_Write(EPD_12in48_M2S2_RST_PIN, 0);
-    DEV_Delay_ms(200);
+    DEV_Delay_ms(20);
     DEV_Digital_Write(EPD_12in48_M1S1_RST_PIN, 1);
     DEV_Digital_Write(EPD_12in48_M2S2_RST_PIN, 1);
     DEV_Delay_ms(200);

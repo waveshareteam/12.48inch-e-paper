@@ -1,12 +1,12 @@
 /*****************************************************************************
-* | File      	:	EPD_12in48b.c
+* | File      	:	EPD_12in48b_V2.c
 * | Author      :   Waveshare team
 * | Function    :   Electronic paper driver
 * | Info	 :
 *----------------
 * |	This version:   V1.0
-* | Date	 :   2018-11-29
-* | Info	 :
+* | Date	 	:   2022-09-13
+* | Info	 	:
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files(the "Software"), to deal
@@ -27,7 +27,7 @@
 # THE SOFTWARE.
 #
 ******************************************************************************/
-#include "EPD_12in48b.h"
+#include "EPD_12in48b_V2.h"
 #include "SRAM_23LC.h"
 #include "Debug.h"
 
@@ -55,7 +55,7 @@ static void EPD_SetLut(void);
 function :	Initialize the e-Paper register
 parameter:
 ******************************************************************************/
-UBYTE EPD_12in48B_Init(void)
+UBYTE EPD_12in48B_V2_Init(void)
 {
     DEV_Digital_Write(EPD_M1_CS_PIN, 1);
     DEV_Digital_Write(EPD_S1_CS_PIN, 1);
@@ -64,29 +64,25 @@ UBYTE EPD_12in48B_Init(void)
 
     EPD_Reset();
 
-    //panel setting
-    EPD_M1_SendCommand(0x00);
-    EPD_M1_SendData(0x2f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
-    EPD_S1_SendCommand(0x00);
-    EPD_S1_SendData(0x2f);
-    EPD_M2_SendCommand(0x00);
-    EPD_M2_SendData(0x23);
-    EPD_S2_SendCommand(0x00);
-    EPD_S2_SendData(0x23);
+	// panel setting for Clear
+	// EPD_M1_SendCommand(0x00);
+	// EPD_M1_SendData(0x07);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+	// EPD_S1_SendCommand(0x00);
+	// EPD_S1_SendData(0x07);
+	// EPD_M2_SendCommand(0x00);
+	// EPD_M2_SendData(0x07);
+	// EPD_S2_SendCommand(0x00);
+	// EPD_S2_SendData(0x07);
 
-    // POWER SETTING
-    EPD_M1_SendCommand(0x01);
-    EPD_M1_SendData(0x07);
-    EPD_M1_SendData(0x17);	//VGH=20V,VGL=-20V
-    EPD_M1_SendData(0x3F);	//VDH=15V
-    EPD_M1_SendData(0x3F);  //VDL=-15V
-    EPD_M1_SendData(0x0d);
-    EPD_M2_SendCommand(0x01);
-    EPD_M2_SendData(0x07);
-    EPD_M2_SendData(0x17);	//VGH=20V,VGL=-20V
-    EPD_M2_SendData(0x3F);	//VDH=15V
-    EPD_M2_SendData(0x3F);  //VDL=-15V
-    EPD_M2_SendData(0x0d);
+	// panel setting for Display
+    EPD_M1_SendCommand(0x00);
+    EPD_M1_SendData(0x0f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+    EPD_S1_SendCommand(0x00);
+    EPD_S1_SendData(0x0f);
+    EPD_M2_SendCommand(0x00);
+    EPD_M2_SendData(0x03);
+    EPD_S2_SendCommand(0x00);
+    EPD_S2_SendData(0x03);
 
     // booster soft start
     EPD_M1_SendCommand(0x06);
@@ -125,31 +121,17 @@ UBYTE EPD_12in48B_Init(void)
     EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
     EPD_M1S1M2S2_SendData(0x20);
 
-    EPD_M1S1M2S2_SendCommand(0x30);	// PLL
-    EPD_M1S1M2S2_SendData(0x08);
-
     EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
-    EPD_M1S1M2S2_SendData(0x31);
+    EPD_M1S1M2S2_SendData(0x11);
     EPD_M1S1M2S2_SendData(0x07);
 
     EPD_M1S1M2S2_SendCommand(0x60);//TCON
     EPD_M1S1M2S2_SendData(0x22);
 
-    EPD_M1_SendCommand(0xE0);			//POWER SETTING
-    EPD_M1_SendData(0x01);
-    EPD_M2_SendCommand(0xE0);			//POWER SETTING
-    EPD_M2_SendData(0x01);
-
     EPD_M1S1M2S2_SendCommand(0xE3);
     EPD_M1S1M2S2_SendData(0x00);
 
-    EPD_M1_SendCommand(0x82);
-    EPD_M1_SendData(0x1c);
-    EPD_M2_SendCommand(0x82);
-    EPD_M2_SendData(0x1c);
-
-    EPD_SetLut();
-    // EPD_M1_ReadTemperature();
+    EPD_M1_ReadTemperature();
     return 0;
 }
 
@@ -157,7 +139,7 @@ UBYTE EPD_12in48B_Init(void)
 function :	Clear screen
 parameter:
 ******************************************************************************/
-void EPD_12in48B_Clear(void)
+void EPD_12in48B_V2_Clear(void)
 {
     UWORD y, x;
 
@@ -165,13 +147,13 @@ void EPD_12in48B_Clear(void)
     EPD_M1_SendCommand(0x10);
     for(y =  492; y < 984; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_M1_SendData(0x00);
+            EPD_M1_SendData(0xff);
         }
     }
     EPD_M1_SendCommand(0x13);
     for(y = 492; y < 984; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_M1_SendData(0xff);
+            EPD_M1_SendData(0x00);
         }
     }
 
@@ -179,13 +161,13 @@ void EPD_12in48B_Clear(void)
     EPD_S1_SendCommand(0x10);
     for(y = 492; y < 984; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_S1_SendData(0x00);
+            EPD_S1_SendData(0xff);
         }
     }
     EPD_S1_SendCommand(0x13);
     for(y = 492; y < 984; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_S1_SendData(0xff);
+            EPD_S1_SendData(0x00);
         }
     }
 
@@ -193,13 +175,13 @@ void EPD_12in48B_Clear(void)
     EPD_M2_SendCommand(0x10);
     for(y = 0; y < 492; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_M2_SendData(0x00);
+            EPD_M2_SendData(0xff);
         }
     }
     EPD_M2_SendCommand(0x13);
     for(y = 0; y < 492; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_M2_SendData(0xff);
+            EPD_M2_SendData(0x00);
         }
     }
 
@@ -207,21 +189,21 @@ void EPD_12in48B_Clear(void)
     EPD_S2_SendCommand(0x10);
     for(y = 0; y < 492; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_S2_SendData(0x00);
+            EPD_S2_SendData(0xff);
         }
     }
     EPD_S2_SendCommand(0x13);
     for(y = 0; y < 492; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_S2_SendData(0xff);
+            EPD_S2_SendData(0x00);
         }
     }
 
     // Turn On Display
-    EPD_12in48B_TurnOnDisplay();
+    EPD_12in48B_V2_TurnOnDisplay();
 }
 
-void EPD_12in48B_ClearBlack(void)
+void EPD_12in48B_V2_ClearBlack(void)
 {
     UWORD y, x;
 
@@ -229,13 +211,13 @@ void EPD_12in48B_ClearBlack(void)
     EPD_M1_SendCommand(0x10);
     for(y =  492; y < 984; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_M1_SendData(0xff);
+            EPD_M1_SendData(0x00);
         }
     }
     EPD_M1_SendCommand(0x13);
     for(y = 492; y < 984; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_M1_SendData(0xff);
+            EPD_M1_SendData(0x00);
         }
     }
 
@@ -243,13 +225,13 @@ void EPD_12in48B_ClearBlack(void)
     EPD_S1_SendCommand(0x10);
     for(y = 492; y < 984; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_S1_SendData(0xff);
+            EPD_S1_SendData(0x00);
         }
     }
     EPD_S1_SendCommand(0x13);
     for(y = 492; y < 984; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_S1_SendData(0xff);
+            EPD_S1_SendData(0x00);
         }
     }
 
@@ -257,13 +239,13 @@ void EPD_12in48B_ClearBlack(void)
     EPD_M2_SendCommand(0x10);
     for(y = 0; y < 492; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_M2_SendData(0xff);
+            EPD_M2_SendData(0x00);
         }
     }
     EPD_M2_SendCommand(0x13);
     for(y = 0; y < 492; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_M2_SendData(0xff);
+            EPD_M2_SendData(0x00);
         }
     }
 
@@ -271,21 +253,21 @@ void EPD_12in48B_ClearBlack(void)
     EPD_S2_SendCommand(0x10);
     for(y = 0; y < 492; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_S2_SendData(0xff);
+            EPD_S2_SendData(0x00);
         }
     }
     EPD_S2_SendCommand(0x13);
     for(y = 0; y < 492; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_S2_SendData(0xff);
+            EPD_S2_SendData(0x00);
         }
     }
 
     // Turn On Display
-    EPD_12in48B_TurnOnDisplay();
+    EPD_12in48B_V2_TurnOnDisplay();
 }
 
-void EPD_12in48B_ClearRed(void)
+void EPD_12in48B_V2_ClearRed(void)
 {
     UWORD y, x;
 
@@ -293,13 +275,13 @@ void EPD_12in48B_ClearRed(void)
     EPD_M1_SendCommand(0x10);
     for(y =  492; y < 984; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_M1_SendData(0x00);
+            EPD_M1_SendData(0xff);
         }
     }
     EPD_M1_SendCommand(0x13);
     for(y = 492; y < 984; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_M1_SendData(0x00);
+            EPD_M1_SendData(0xff);
         }
     }
 
@@ -307,13 +289,13 @@ void EPD_12in48B_ClearRed(void)
     EPD_S1_SendCommand(0x10);
     for(y = 492; y < 984; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_S1_SendData(0x00);
+            EPD_S1_SendData(0xff);
         }
     }
     EPD_S1_SendCommand(0x13);
     for(y = 492; y < 984; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_S1_SendData(0x00);
+            EPD_S1_SendData(0xff);
         }
     }
 
@@ -321,13 +303,13 @@ void EPD_12in48B_ClearRed(void)
     EPD_M2_SendCommand(0x10);
     for(y = 0; y < 492; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_M2_SendData(0x00);
+            EPD_M2_SendData(0xff);
         }
     }
     EPD_M2_SendCommand(0x13);
     for(y = 0; y < 492; y++) {
         for(x = 81; x < 163; x++) {
-            EPD_M2_SendData(0x00);
+            EPD_M2_SendData(0xff);
         }
     }
 
@@ -335,24 +317,24 @@ void EPD_12in48B_ClearRed(void)
     EPD_S2_SendCommand(0x10);
     for(y = 0; y < 492; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_S2_SendData(0x00);
+            EPD_S2_SendData(0xff);
         }
     }
     EPD_S2_SendCommand(0x13);
     for(y = 0; y < 492; y++) {
         for(x = 0; x < 81; x++) {
-            EPD_S2_SendData(0x00);
+            EPD_S2_SendData(0xff);
         }
     }
 
     // Turn On Display
-    EPD_12in48B_TurnOnDisplay();
+    EPD_12in48B_V2_TurnOnDisplay();
 }
 /******************************************************************************
 function :	Sends the image buffer in RAM to e-Paper and displays
 parameter:
 ******************************************************************************/
-void EPD_12in48B_Display(void)
+void EPD_12in48B_V2_Display(void)
 {
     UDOUBLE x = 0, y = 0;
     //S1 part 648*492
@@ -403,30 +385,30 @@ void EPD_12in48B_Display(void)
             EPD_S1_SendData(~SRAM_ReadByte(y*163 + x + EPD_MAX_BYTE));
         }
 
-    EPD_12in48B_TurnOnDisplay();
+    EPD_12in48B_V2_TurnOnDisplay();
 }
 
 /******************************************************************************
 function :	Turn On Display
 parameter:
 ******************************************************************************/
-void EPD_12in48B_TurnOnDisplay(void)
+void EPD_12in48B_V2_TurnOnDisplay(void)
 {
     EPD_M1M2_SendCommand(0x04); //power on
     DEV_Delay_ms(300);
     EPD_M1S1M2S2_SendCommand(0x12); //Display Refresh
 
     EPD_M1_ReadBusy();
-    // EPD_S1_ReadBusy();
-    // EPD_M2_ReadBusy();
-    // EPD_S2_ReadBusy();
+    EPD_S1_ReadBusy();
+    EPD_M2_ReadBusy();
+    EPD_S2_ReadBusy();
 }
 
 /******************************************************************************
 function :	Enter sleep mode
 parameter:
 ******************************************************************************/
-void EPD_12in48B_Sleep(void)
+void EPD_12in48B_V2_Sleep(void)
 {
     EPD_M1S1M2S2_SendCommand(0X02);  	//power off
     DEV_Delay_ms(300);
@@ -651,102 +633,3 @@ static void EPD_M1_ReadTemperature(void)
 
 }
 
-static unsigned char lut_vcom1[] = {
-    0x00,	0x10,	0x10,	0x01,	0x08,	0x01,
-    0x00,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x00,	0x08,	0x01,	0x08,	0x01,	0x06,
-    0x00,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x06,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x01,
-    0x00,	0x04,	0x05,	0x08,	0x08,	0x01,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-};
-static unsigned char lut_ww1[] = {
-    0x91,	0x10,	0x10,	0x01,	0x08,	0x01,
-    0x04,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x84,	0x08,	0x01,	0x08,	0x01,	0x06,
-    0x80,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x06,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x01,
-    0x08,	0x04,	0x05,	0x08,	0x08,	0x01,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-};
-static unsigned char lut_bw1[] = {
-    0xA8,	0x10,	0x10,	0x01,	0x08,	0x01,
-    0x84,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x84,	0x08,	0x01,	0x08,	0x01,	0x06,
-    0x86,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x8C,	0x05,	0x01,	0x1E,	0x0F,	0x06,
-    0x8C,	0x05,	0x01,	0x1E,	0x0F,	0x01,
-    0xF0,	0x04,	0x05,	0x08,	0x08,	0x01,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-};
-static unsigned char lut_wb1[] = {
-    0x91,	0x10,	0x10,	0x01,	0x08,	0x01,
-    0x04,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x84,	0x08,	0x01,	0x08,	0x01,	0x06,
-    0x80,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x06,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x01,
-    0x08,	0x04,	0x05,	0x08,	0x08,	0x01,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-};
-static unsigned char lut_bb1[] = {
-    0x92,	0x10,	0x10,	0x01,	0x08,	0x01,
-    0x80,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x84,	0x08,	0x01,	0x08,	0x01,	0x06,
-    0x04,	0x06,	0x01,	0x06,	0x01,	0x05,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x06,
-    0x00,	0x05,	0x01,	0x1E,	0x0F,	0x01,
-    0x01,	0x04,	0x05,	0x08,	0x08,	0x01,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-    0x00,	0x00,	0x00,	0x00,	0x00,	0x00,
-};
-
-/******************************************************************************
-function :	ReadTemperature
-parameter:
-******************************************************************************/
-static void EPD_SetLut(void)
-{
-    UWORD count;
-
-    EPD_M1S1M2S2_SendCommand(0x20);							//vcom
-    for(count=0; count<60; count++) {
-        EPD_M1S1M2S2_SendData(lut_vcom1[count]);
-    }
-
-    EPD_M1S1M2S2_SendCommand(0x21);							//red not use
-    for(count=0; count<60; count++) {
-        EPD_M1S1M2S2_SendData(lut_ww1[count]);
-    }
-
-    EPD_M1S1M2S2_SendCommand(0x22);							//bw r
-    for(count=0; count<60; count++) {
-        EPD_M1S1M2S2_SendData(lut_bw1[count]);   // bw=r
-    }
-
-    EPD_M1S1M2S2_SendCommand(0x23);							//wb w
-    for(count=0; count<60; count++) {
-        EPD_M1S1M2S2_SendData(lut_wb1[count]);   // wb=w
-    }
-
-    EPD_M1S1M2S2_SendCommand(0x24);							//bb b
-    for(count=0; count<60; count++) {
-        EPD_M1S1M2S2_SendData(lut_bb1[count]);   // bb=b
-    }
-
-    EPD_M1S1M2S2_SendCommand(0x25);							//bb b
-    for(count=0; count<60; count++) {
-        EPD_M1S1M2S2_SendData(lut_ww1[count]);   // bb=b
-    }
-}

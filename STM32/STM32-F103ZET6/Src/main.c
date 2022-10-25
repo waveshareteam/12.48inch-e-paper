@@ -63,7 +63,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int Version;
 /* USER CODE END 0 */
 
 /**
@@ -102,8 +102,7 @@ int main(void)
 	//EPD_12in48 is black and white
 	//EPD_12in48B is black and white red
 	
-//	EPD_12in48_test();
-	EPD_12in48B_test();
+
 	
   /* USER CODE END 2 */
 
@@ -114,6 +113,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	//EPD_12in48_test();
+	//EPD_12in48B_test();
+	EPD_12in48B_V2_test();
+	DEV_Delay_ms(9000);
   }
   /* USER CODE END 3 */
 }

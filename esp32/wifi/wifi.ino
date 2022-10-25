@@ -11,10 +11,9 @@ void setup()
     // Serial port initialization
     Serial.begin(115200);
     delay(10);
-
     // SPI initialization
     DEV_ModuleInit();
-   
+
     DEV_TestLED();
     Web_Init();
     

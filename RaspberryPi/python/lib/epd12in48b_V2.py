@@ -1,11 +1,11 @@
 # /*****************************************************************************
-# * | File        :	  epd12in48.py
+# * | File        :	  epd12in48b_V2.py
 # * | Author      :   Waveshare electrices
 # * | Function    :   Hardware underlying interface
 # * | Info        :
 # *----------------
-# * |	This version:   V1.0
-# * | Date        :   2019-11-01
+# * | This version:   V1.0
+# * | Date        :   2022-09-14
 # * | Info        :   
 # ******************************************************************************/
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -63,30 +63,26 @@ class EPD(object):
         epdconfig.digital_write(self.EPD_S2_CS_PIN, 1) 
         self.Reset() 
 
-        #panel setting
-        self.M1_SendCommand(0x00) 
-        self.M1_SendData(0x2f) 	#KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
-        self.S1_SendCommand(0x00) 
-        self.S1_SendData(0x2f) 
-        self.M2_SendCommand(0x00) 
-        self.M2_SendData(0x23) 
-        self.S2_SendCommand(0x00) 
-        self.S2_SendData(0x23) 
+        # panel setting for Clear
+        # self.M1_SendCommand(0x00)
+        # self.M1_SendData(0x07)	#KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+        # self.S1_SendCommand(0x00)
+        # self.S1_SendData(0x07)
+        # self.M2_SendCommand(0x00)
+        # self.M2_SendData(0x07)
+        # self.S2_SendCommand(0x00)
+        # self.S2_SendData(0x07)
 
-        # POWER SETTING
-        self.M1_SendCommand(0x01)
-        self.M1_SendData(0x07)
-        self.M1_SendData(0x17)	# VGH=20V,VGL=-20V
-        self.M1_SendData(0x3F)   # VDH=15V
-        self.M1_SendData(0x3F)   # VDL=-15V
-        self.M1_SendData(0x0d)
-        self.M2_SendCommand(0x01)
-        self.M2_SendData(0x07)
-        self.M2_SendData(0x17)	# VGH=20V,VGL=-20V
-        self.M2_SendData(0x3F)	# VDH=15V
-        self.M2_SendData(0x3F)  # VDL=-15V
-        self.M2_SendData(0x0d)
-        
+        # panel setting for Display
+        self.M1_SendCommand(0x00)
+        self.M1_SendData(0x0f)	#KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+        self.S1_SendCommand(0x00)
+        self.S1_SendData(0x0f)
+        self.M2_SendCommand(0x00)
+        self.M2_SendData(0x03)
+        self.S2_SendCommand(0x00)
+        self.S2_SendData(0x03)
+
         # booster soft start
         self.M1_SendCommand(0x06)
         self.M1_SendData(0x17)	#A
@@ -124,30 +120,17 @@ class EPD(object):
         self.M1S1M2S2_SendCommand(0x15)	#DUSPI
         self.M1S1M2S2_SendData(0x20)
 
-        self.M1S1M2S2_SendCommand(0x30)	# PLL
-        self.M1S1M2S2_SendData(0x08)
-
         self.M1S1M2S2_SendCommand(0x50)	#Vcom and data interval setting
-        self.M1S1M2S2_SendData(0x31)
+        self.M1S1M2S2_SendData(0x11)
         self.M1S1M2S2_SendData(0x07)
 
         self.M1S1M2S2_SendCommand(0x60)#TCON
         self.M1S1M2S2_SendData(0x22)
 
-        self.M1_SendCommand(0xE0)			#POWER SETTING
-        self.M1_SendData(0x01)
-        self.M2_SendCommand(0xE0)			#POWER SETTING
-        self.M2_SendData(0x01)
-
         self.M1S1M2S2_SendCommand(0xE3)
         self.M1S1M2S2_SendData(0x00)
 
-        self.M1_SendCommand(0x82)
-        self.M1_SendData(0x1c)
-        self.M2_SendCommand(0x82)
-        self.M2_SendData(0x1c)
-
-        self.SetLut()
+        self.M1_ReadTemperature()
         
     def display(self, BlackImage, RedImage):
         start = time.clock()
@@ -156,7 +139,7 @@ class EPD(object):
         blackconvert = BlackImage.convert('1')       
         bimwidth, bimheight = blackconvert.size 
         Blackpixles = blackconvert.load()
-        temp=0;
+        temp=0
         for y in range(0, bimheight):
             for x in range(0, bimwidth):
                 if Blackpixles[x, y] < 127:           # black
@@ -171,7 +154,7 @@ class EPD(object):
         redconvert = RedImage.convert('1')
         rimwidth, rimheight = redconvert.size 
         Redpixles = redconvert.load()
-        temp=0;
+        temp=0
         for y in range(0, rimheight):
             for x in range(0, rimwidth):
                 if Redpixles[x, y] < 127:           # black
@@ -523,3 +506,24 @@ class EPD(object):
         self.M1S1M2S2_SendCommand(0x25) #bb b
         for count in range(0, 60):
             self.M1S1M2S2_SendData(self.lut_ww1[count])   # bb=b
+
+    def M1_ReadTemperature(self):
+        self.M1_SendCommand(0x40)
+        self.M1_ReadBusy()
+        time.sleep(0.3)
+        
+        epdconfig.digital_write(self.EPD_M1_CS_PIN, 0)
+        epdconfig.digital_write(self.EPD_S1_CS_PIN, 1)
+        epdconfig.digital_write(self.EPD_M2_CS_PIN, 1)
+        epdconfig.digital_write(self.EPD_S2_CS_PIN, 1)
+        
+        epdconfig.digital_write(self.EPD_M1S1_DC_PIN, 1)
+        time.sleep(0.05)
+        
+        temp = epdconfig.spi_readbyte(0x00)
+        epdconfig.digital_write(self.EPD_M1_CS_PIN, 1)
+        
+        self.M1S1M2S2_SendCommand(0xE0)
+        self.M1S1M2S2_SendData(0x03)
+        self.M1S1M2S2_SendCommand(0xE5)
+        self.M1S1M2S2_SendData(temp)

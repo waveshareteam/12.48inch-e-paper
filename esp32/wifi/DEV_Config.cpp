@@ -54,11 +54,26 @@ void GPIO_Config(void)
     pinMode(EPD_S2_BUSY_PIN,  INPUT);
 
     // Init
-    digitalWrite(EPD_M1_CS_PIN,  HIGH);
-    digitalWrite(EPD_S1_CS_PIN,  HIGH);
-    digitalWrite(EPD_M2_CS_PIN,  HIGH);
-    digitalWrite(EPD_S2_CS_PIN,  HIGH);
-    digitalWrite(EPD_SCK_PIN, LOW);
+    DEV_Digital_Write(EPD_M1_CS_PIN,  HIGH);
+    DEV_Digital_Write(EPD_S1_CS_PIN,  HIGH);
+    DEV_Digital_Write(EPD_M2_CS_PIN,  HIGH);
+    DEV_Digital_Write(EPD_S2_CS_PIN,  HIGH);
+    DEV_Digital_Write(EPD_SCK_PIN, LOW);
+	
+	DEV_Digital_Write(EPD_SCK_PIN, 0);
+    DEV_Digital_Write(EPD_MOSI_PIN, 0);
+    DEV_Digital_Write(EPD_M1_CS_PIN,  0);
+    DEV_Digital_Write(EPD_S1_CS_PIN,  0);
+    DEV_Digital_Write(EPD_M2_CS_PIN,  0);
+    DEV_Digital_Write(EPD_S2_CS_PIN,  0);
+    DEV_Digital_Write(EPD_M1S1_DC_PIN,  0);
+    DEV_Digital_Write(EPD_M2S2_DC_PIN,  0);
+    DEV_Digital_Write(EPD_M1S1_RST_PIN,  0);
+    DEV_Digital_Write(EPD_M2S2_RST_PIN,  0);
+    DEV_Digital_Write(EPD_M1_BUSY_PIN,  0);
+    DEV_Digital_Write(EPD_S1_BUSY_PIN,  0);
+    DEV_Digital_Write(EPD_M2_BUSY_PIN,  0);
+    DEV_Digital_Write(EPD_S2_BUSY_PIN,  0);
 }
 /******************************************************************************
 function:	Module Initialize, the BCM2835 library and initialize the pins, SPI protocol
@@ -68,7 +83,6 @@ Info:
 UBYTE DEV_ModuleInit(void)
 {
     GPIO_Config();
-    Serial.begin(115200);
     pinMode(LED, OUTPUT);
     return 0;
 }
@@ -89,9 +103,9 @@ void DEV_Delay_us(UWORD xus)
 
 void DEV_TestLED(void)
 {
-    digitalWrite(LED, HIGH);   // turn the LED on (HIGH is the voltage level)
+    DEV_Digital_Write(LED, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(1000);              // wait for a second
-    digitalWrite(LED, LOW);    // turn the LED off by making the voltage LOW
+    DEV_Digital_Write(LED, LOW);    // turn the LED off by making the voltage LOW
     delay(1000);              // wait for a second
 }
 

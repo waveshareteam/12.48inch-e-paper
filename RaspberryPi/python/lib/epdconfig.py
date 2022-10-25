@@ -142,7 +142,7 @@ def spi_readbyte(Reg):
     GPIO.setup(EPD_MOSI_PIN, GPIO.OUT)
     return j 
     
-    def delay_ms(delaytime):
-        time.sleep(delaytime / 1000.0)
+def delay_ms(delaytime):
+    time.sleep(delaytime / 1000.0)
 
   

@@ -55,14 +55,17 @@ parameter:
 ******************************************************************************/
 UBYTE EPD_12in48_Init(void)
 {
+
+
+    EPD_12in48_Reset();
+
     DEV_Digital_Write(EPD_12in48_M1_CS_PIN, 1);
     DEV_Digital_Write(EPD_12in48_S1_CS_PIN, 1);
     DEV_Digital_Write(EPD_12in48_M2_CS_PIN, 1);
     DEV_Digital_Write(EPD_12in48_S2_CS_PIN, 1);
 
-    EPD_12in48_Reset();
-
     //panel setting
+    EPD_12in48_M1_SendCommand(0x00);
     EPD_12in48_M1_SendCommand(0x00);
     EPD_12in48_M1_SendData(0x1f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
     EPD_12in48_S1_SendCommand(0x00);
@@ -123,7 +126,8 @@ UBYTE EPD_12in48_Init(void)
     EPD_12in48_M1S1M2S2_SendData(0x03);
 
     EPD_12in48_M1S1M2S2_SendCommand(0xe5);//Force temperature
-    EPD_12in48_M1S1M2S2_SendData(EPD_12in48_M1_ReadTemperature());
+    EPD_12in48_M1S1M2S2_SendData(19);
+	// EPD_12in48_M1S1M2S2_SendData(EPD_12in48_M1_ReadTemperature());
 
     return 0;
 }
@@ -239,10 +243,10 @@ void EPD_12in48_TurnOnDisplay(void)
     Serial.print("EPD_12in48_M1_ReadBusy ...\r\n");
     EPD_12in48_S1_ReadBusy();
     Serial.print("EPD_12in48_M2_ReadBusy ...\r\n");
-    // EPD_12in48_M2_ReadBusy();
-    // Serial.print("EPD_12in48_S1_ReadBusy ...\r\n");
-    // EPD_12in48_S2_ReadBusy();
-    // Serial.print("EPD_12in48_S2_ReadBusy ...\r\n");
+    EPD_12in48_M2_ReadBusy();
+    Serial.print("EPD_12in48_S1_ReadBusy ...\r\n");
+    EPD_12in48_S2_ReadBusy();
+    Serial.print("EPD_12in48_S2_ReadBusy ...\r\n");
 }
 
 /******************************************************************************
@@ -265,9 +269,12 @@ parameter:
 ******************************************************************************/
 static void EPD_12in48_Reset(void)
 {
+    DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
+    DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
+    DEV_Delay_ms(200);
     DEV_Digital_Write(EPD_12in48_M1S1_RST_PIN, 0);
     DEV_Digital_Write(EPD_12in48_M2S2_RST_PIN, 0);
-    DEV_Delay_ms(200);
+    DEV_Delay_ms(10);
     DEV_Digital_Write(EPD_12in48_M1S1_RST_PIN, 1);
     DEV_Digital_Write(EPD_12in48_M2S2_RST_PIN, 1);
     DEV_Delay_ms(200);
@@ -416,9 +423,11 @@ static void EPD_12in48_M1_ReadBusy(void)
         EPD_12in48_M1_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_12in48_M1_BUSY_PIN);
         busy =!(busy & 0x01);
+	    DEV_Delay_ms(200);
     } while(busy);
     Debug("M1 Busy free\r\n");
-    DEV_Delay_ms(200);
+
+
 }
 
 static void EPD_12in48_M2_ReadBusy(void)
@@ -428,6 +437,7 @@ static void EPD_12in48_M2_ReadBusy(void)
         EPD_12in48_M2_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_12in48_M2_BUSY_PIN);
         busy =!(busy & 0x01);
+		DEV_Delay_ms(200);
     } while(busy);
     DEV_Delay_ms(200);
 }
@@ -439,6 +449,7 @@ static void EPD_12in48_S1_ReadBusy(void)
         EPD_12in48_S1_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_12in48_S1_BUSY_PIN);
         busy =!(busy & 0x01);
+		DEV_Delay_ms(200);
     } while(busy);
     DEV_Delay_ms(200);
 }
@@ -450,6 +461,7 @@ static void EPD_12in48_S2_ReadBusy(void)
     EPD_12in48_S2_SendCommand(0x71);
     busy = DEV_Digital_Read(EPD_12in48_S2_BUSY_PIN);
     busy =!(busy & 0x01);
+	DEV_Delay_ms(200);
     DEV_Delay_ms(200);
 }
 
@@ -471,5 +483,6 @@ static UBYTE EPD_12in48_M1_ReadTemperature(void)
     temp = DEV_SPI_ReadByte(0x00);
     DEV_Digital_Write(EPD_12in48_M1_CS_PIN, 1);
 
+	temp = 19;
     return temp;
 }

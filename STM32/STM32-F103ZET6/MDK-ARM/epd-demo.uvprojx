@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32F103ZE</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.1.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.2.3.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000-0x2000FFFF) IROM(0x8000000-0x807FFFF) CLOCK(8000000) CPUTYPE("Cortex-M3")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -447,14 +447,14 @@
           <GroupName>e-Paper</GroupName>
           <Files>
             <File>
-              <FileName>EPD_12in48.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\e-Paper\EPD_12in48.c</FilePath>
-            </File>
-            <File>
               <FileName>ImageData.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\e-Paper\ImageData.c</FilePath>
+            </File>
+            <File>
+              <FileName>EPD_12in48.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\e-Paper\EPD_12in48.c</FilePath>
             </File>
             <File>
               <FileName>EPD_12in48b.c</FileName>
@@ -605,6 +605,11 @@
               <FileName>EPD_12in48B_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\examples\EPD_12in48B_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>EPD_12in48B_V2_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\examples\EPD_12in48B_V2_test.c</FilePath>
             </File>
           </Files>
         </Group>

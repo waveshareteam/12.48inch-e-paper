@@ -54,11 +54,28 @@ void GPIO_Config(void)
     pinMode(EPD_S2_BUSY_PIN,  INPUT);
 
     // Init
-    digitalWrite(EPD_M1_CS_PIN,  HIGH);
-    digitalWrite(EPD_S1_CS_PIN,  HIGH);
-    digitalWrite(EPD_M2_CS_PIN,  HIGH);
-    digitalWrite(EPD_S2_CS_PIN,  HIGH);
-    digitalWrite(EPD_SCK_PIN, LOW);
+    // DEV_Digital_Write(EPD_M1_CS_PIN,  1);
+    // DEV_Digital_Write(EPD_S1_CS_PIN,  1);
+    // DEV_Digital_Write(EPD_M2_CS_PIN,  1);
+    // DEV_Digital_Write(EPD_S2_CS_PIN,  1);
+    // DEV_Digital_Write(EPD_SCK_PIN, 0);
+	
+	
+	DEV_Digital_Write(EPD_SCK_PIN, 0);
+    DEV_Digital_Write(EPD_MOSI_PIN, 0);
+    DEV_Digital_Write(EPD_M1_CS_PIN,  0);
+    DEV_Digital_Write(EPD_S1_CS_PIN,  0);
+    DEV_Digital_Write(EPD_M2_CS_PIN,  0);
+    DEV_Digital_Write(EPD_S2_CS_PIN,  0);
+    DEV_Digital_Write(EPD_M1S1_DC_PIN,  0);
+    DEV_Digital_Write(EPD_M2S2_DC_PIN,  0);
+    DEV_Digital_Write(EPD_M1S1_RST_PIN,  0);
+    DEV_Digital_Write(EPD_M2S2_RST_PIN,  0);
+    DEV_Digital_Write(EPD_M1_BUSY_PIN,  0);
+    DEV_Digital_Write(EPD_S1_BUSY_PIN,  0);
+    DEV_Digital_Write(EPD_M2_BUSY_PIN,  0);
+    DEV_Digital_Write(EPD_S2_BUSY_PIN,  0);
+	
 }
 /******************************************************************************
 function:	Module Initialize, the BCM2835 library and initialize the pins, SPI protocol
@@ -89,9 +106,9 @@ void DEV_Delay_us(UWORD xus)
 
 void DEV_TestLED(void)
 {
-    digitalWrite(LED, HIGH);   // turn the LED on (HIGH is the voltage level)
+    DEV_Digital_Write(LED, 1);   // turn the LED on (1 is the voltage level)
     delay(1000);              // wait for a second
-    digitalWrite(LED, LOW);    // turn the LED off by making the voltage LOW
+    DEV_Digital_Write(LED, 0);    // turn the LED off by making the voltage 0
     delay(1000);              // wait for a second
 }
 
@@ -99,27 +116,34 @@ void DEV_TestLED(void)
 function:
 			SPI read and write
 ******************************************************************************/
-void DEV_SPI_WriteByte(UBYTE value)
+void DEV_SPI_WriteByte(UBYTE data)
 {
     char i;
+	// printf("data is %x \r\n", data);
+
     DEV_Digital_Write(EPD_SCK_PIN, 0);
     for(i = 0; i < 8; i++) {
+		DEV_Delay_us(10);
         DEV_Digital_Write(EPD_SCK_PIN, 0);
-        DEV_Delay_us(5);
-        if((value << i)  & 0x80) {
+        DEV_Delay_us(10);
+        if(data&0x80) {
             DEV_Digital_Write(EPD_MOSI_PIN, 1);
-        } else {
+			// printf("****** \r\n", data);
+		}
+        else {
             DEV_Digital_Write(EPD_MOSI_PIN, 0);
+			// printf("------ \r\n", data);
         }
-        DEV_Delay_us(5);
+		data = data << 1;
+        DEV_Delay_us(10);
         DEV_Digital_Write(EPD_SCK_PIN, 1);
-        DEV_Delay_us(5);
+        DEV_Delay_us(10);
     }
 }
 
 UBYTE DEV_SPI_ReadByte(char x)
 {
-    UBYTE i,temp=0;
+    UBYTE i,temp=25;
     
     // pinMode(EPD_MOSI_PIN,  INPUT);
     // for(i = 0; i < 8; i++) {
