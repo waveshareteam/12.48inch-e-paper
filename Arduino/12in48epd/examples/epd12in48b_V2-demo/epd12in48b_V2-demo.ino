@@ -1,5 +1,5 @@
 #include "DEV_Config.h"
-#include "EPD_12in48b.h"
+#include "EPD_12in48b_V2.h"
 #include "GUI_Paint.h"
 #include "SRAM_23LC.h"
 #include "imagedata.h"
@@ -7,7 +7,7 @@
 void setup()
 {
     DEV_ModuleInit();
-    Serial.print("12.48 e-Paper\n");
+    Serial.print("12.48inch e-Paper (B) V2\n");
 
 }
 
@@ -15,14 +15,16 @@ void loop()
 {
     SRAM_Init();
 	Serial.print("Init \n");
-    EPD_12in48B_Init();
+    EPD_12in48B_V2_Init();
 	
     Serial.print("Clear \n");
-    EPD_12in48B_Clear();
+    EPD_12in48B_V2_Clear();
     DEV_Delay_ms(500);  
-    EPD_12in48B_ClearBlack();
+	Serial.print("Clear Black\n");
+    EPD_12in48B_V2_ClearBlack();
     DEV_Delay_ms(500);  
-    EPD_12in48B_ClearRed();
+	Serial.print("Clear Red\n");
+    EPD_12in48B_V2_ClearRed();
 
 #if 0
     Paint_NewImage(BLACKIMAGE, 1304, 984, ROTATE_0, WHITE);
@@ -58,7 +60,7 @@ void loop()
     Paint_DrawString_CN(920, 350, "微雪电子", &Font24CN, WHITE, RED);
     
     Serial.print("EPD_Display\n");
-    EPD_12in48B_Display();
+    EPD_12in48B_V2_Display();
 #endif
 
 #if 1
@@ -82,11 +84,11 @@ void loop()
     Paint_DrawImage(gImage_240x240logo, 240, 732, 240, 240);
     Paint_DrawImage(gImage_240x240logo, 720, 732, 240, 240);
     Serial.print("EPD_Display\n");
-    EPD_12in48B_Display();
+    EPD_12in48B_V2_Display();
 #endif
 
     DEV_Delay_ms(500);    
     Serial.print("EPD_Sleep\n");
-    EPD_12in48B_Clear();
-    EPD_12in48B_Sleep();
+    EPD_12in48B_V2_Clear();
+    EPD_12in48B_V2_Sleep();
 }

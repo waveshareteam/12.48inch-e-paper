@@ -30,6 +30,8 @@
 #include "EPD_12in48b.h"
 #include "../Debug.h"
 
+extern int Version;
+
 static void EPD_Reset(void);
 static void EPD_M1_SendCommand(UBYTE Reg);
 static void EPD_M1_SendData(UBYTE Data);
@@ -56,100 +58,177 @@ parameter:
 ******************************************************************************/
 UBYTE EPD_12in48B_Init(void)
 {
-    DEV_Digital_Write(EPD_M1_CS_PIN, 1);
-    DEV_Digital_Write(EPD_S1_CS_PIN, 1);
-    DEV_Digital_Write(EPD_M2_CS_PIN, 1);
-    DEV_Digital_Write(EPD_S2_CS_PIN, 1);
-
+	
     EPD_Reset();
+	
+	DEV_Digital_Write(EPD_M1_CS_PIN, 1);
+	DEV_Digital_Write(EPD_S1_CS_PIN, 1);
+	DEV_Digital_Write(EPD_M2_CS_PIN, 1);
+	DEV_Digital_Write(EPD_S2_CS_PIN, 1);
+	
+	if(Version == 1) {
+		Debug("Init V1\r\n");
+		//panel setting
+		EPD_M1_SendCommand(0x00);
+		EPD_M1_SendData(0x2f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+		EPD_S1_SendCommand(0x00);
+		EPD_S1_SendData(0x2f);
+		EPD_M2_SendCommand(0x00);
+		EPD_M2_SendData(0x23);
+		EPD_S2_SendCommand(0x00);
+		EPD_S2_SendData(0x23);
 
-    //panel setting
-    EPD_M1_SendCommand(0x00);
-    EPD_M1_SendData(0x2f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
-    EPD_S1_SendCommand(0x00);
-    EPD_S1_SendData(0x2f);
-    EPD_M2_SendCommand(0x00);
-    EPD_M2_SendData(0x23);
-    EPD_S2_SendCommand(0x00);
-    EPD_S2_SendData(0x23);
+		// POWER SETTING
+		EPD_M1_SendCommand(0x01);
+		EPD_M1_SendData(0x07);
+		EPD_M1_SendData(0x17);	//VGH=20V,VGL=-20V
+		EPD_M1_SendData(0x3F);	//VDH=15V
+		EPD_M1_SendData(0x3F);  //VDL=-15V
+		EPD_M1_SendData(0x0d);
+		EPD_M2_SendCommand(0x01);
+		EPD_M2_SendData(0x07);
+		EPD_M2_SendData(0x17);	//VGH=20V,VGL=-20V
+		EPD_M2_SendData(0x3F);	//VDH=15V
+		EPD_M2_SendData(0x3F);  //VDL=-15V
+		EPD_M2_SendData(0x0d);
 
-    // POWER SETTING
-    EPD_M1_SendCommand(0x01);
-    EPD_M1_SendData(0x07);
-    EPD_M1_SendData(0x17);	//VGH=20V,VGL=-20V
-    EPD_M1_SendData(0x3F);	//VDH=15V
-    EPD_M1_SendData(0x3F);  //VDL=-15V
-    EPD_M1_SendData(0x0d);
-    EPD_M2_SendCommand(0x01);
-    EPD_M2_SendData(0x07);
-    EPD_M2_SendData(0x17);	//VGH=20V,VGL=-20V
-    EPD_M2_SendData(0x3F);	//VDH=15V
-    EPD_M2_SendData(0x3F);  //VDL=-15V
-    EPD_M2_SendData(0x0d);
+		// booster soft start
+		EPD_M1_SendCommand(0x06);
+		EPD_M1_SendData(0x17);	//A
+		EPD_M1_SendData(0x17);	//B
+		EPD_M1_SendData(0x39);	//C
+		EPD_M1_SendData(0x17);
+		EPD_M2_SendCommand(0x06);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x39);
+		EPD_M2_SendData(0x17);
 
-    // booster soft start
-    EPD_M1_SendCommand(0x06);
-    EPD_M1_SendData(0x17);	//A
-    EPD_M1_SendData(0x17);	//B
-    EPD_M1_SendData(0x39);	//C
-    EPD_M1_SendData(0x17);
-    EPD_M2_SendCommand(0x06);
-    EPD_M2_SendData(0x17);
-    EPD_M2_SendData(0x17);
-    EPD_M2_SendData(0x39);
-    EPD_M2_SendData(0x17);
+		//resolution setting
+		EPD_M1_SendCommand(0x61);
+		EPD_M1_SendData(0x02);
+		EPD_M1_SendData(0x88);	//source 648
+		EPD_M1_SendData(0x01);	//gate 492
+		EPD_M1_SendData(0xEC);
+		EPD_S1_SendCommand(0x61);
+		EPD_S1_SendData(0x02);
+		EPD_S1_SendData(0x90);	//source 656
+		EPD_S1_SendData(0x01);	//gate 492
+		EPD_S1_SendData(0xEC);
+		EPD_M2_SendCommand(0x61);
+		EPD_M2_SendData(0x02);
+		EPD_M2_SendData(0x90);	//source 656
+		EPD_M2_SendData(0x01);	//gate 492
+		EPD_M2_SendData(0xEC);
+		EPD_S2_SendCommand(0x61);
+		EPD_S2_SendData(0x02);
+		EPD_S2_SendData(0x88);	//source 648
+		EPD_S2_SendData(0x01);	//gate 492
+		EPD_S2_SendData(0xEC);
 
-    //resolution setting
-    EPD_M1_SendCommand(0x61);
-    EPD_M1_SendData(0x02);
-    EPD_M1_SendData(0x88);	//source 648
-    EPD_M1_SendData(0x01);	//gate 492
-    EPD_M1_SendData(0xEC);
-    EPD_S1_SendCommand(0x61);
-    EPD_S1_SendData(0x02);
-    EPD_S1_SendData(0x90);	//source 656
-    EPD_S1_SendData(0x01);	//gate 492
-    EPD_S1_SendData(0xEC);
-    EPD_M2_SendCommand(0x61);
-    EPD_M2_SendData(0x02);
-    EPD_M2_SendData(0x90);	//source 656
-    EPD_M2_SendData(0x01);	//gate 492
-    EPD_M2_SendData(0xEC);
-    EPD_S2_SendCommand(0x61);
-    EPD_S2_SendData(0x02);
-    EPD_S2_SendData(0x88);	//source 648
-    EPD_S2_SendData(0x01);	//gate 492
-    EPD_S2_SendData(0xEC);
+		EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
+		EPD_M1S1M2S2_SendData(0x20);
 
-    EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
-    EPD_M1S1M2S2_SendData(0x20);
+		EPD_M1S1M2S2_SendCommand(0x30);	// PLL
+		EPD_M1S1M2S2_SendData(0x08);
 
-    EPD_M1S1M2S2_SendCommand(0x30);	// PLL
-    EPD_M1S1M2S2_SendData(0x08);
+		EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
+		EPD_M1S1M2S2_SendData(0x31);
+		EPD_M1S1M2S2_SendData(0x07);
 
-    EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
-    EPD_M1S1M2S2_SendData(0x31);
-    EPD_M1S1M2S2_SendData(0x07);
+		EPD_M1S1M2S2_SendCommand(0x60);//TCON
+		EPD_M1S1M2S2_SendData(0x22);
 
-    EPD_M1S1M2S2_SendCommand(0x60);//TCON
-    EPD_M1S1M2S2_SendData(0x22);
+		EPD_M1_SendCommand(0xE0);			//POWER SETTING
+		EPD_M1_SendData(0x01);
+		EPD_M2_SendCommand(0xE0);			//POWER SETTING
+		EPD_M2_SendData(0x01);
 
-    EPD_M1_SendCommand(0xE0);			//POWER SETTING
-    EPD_M1_SendData(0x01);
-    EPD_M2_SendCommand(0xE0);			//POWER SETTING
-    EPD_M2_SendData(0x01);
+		EPD_M1S1M2S2_SendCommand(0xE3);
+		EPD_M1S1M2S2_SendData(0x00);
 
-    EPD_M1S1M2S2_SendCommand(0xE3);
-    EPD_M1S1M2S2_SendData(0x00);
+		EPD_M1_SendCommand(0x82);
+		EPD_M1_SendData(0x1c);
+		EPD_M2_SendCommand(0x82);
+		EPD_M2_SendData(0x1c);
 
-    EPD_M1_SendCommand(0x82);
-    EPD_M1_SendData(0x1c);
-    EPD_M2_SendCommand(0x82);
-    EPD_M2_SendData(0x1c);
+		EPD_SetLut();
+		//EPD_M1_ReadTemperature();
+		return 0;
+	}
+	else if(Version == 2) {
+		Debug("Init V2\r\n");
+		
+		// panel setting for Clear
+		// EPD_M1_SendCommand(0x00);
+		// EPD_M1_SendData(0x07);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+		// EPD_S1_SendCommand(0x00);
+		// EPD_S1_SendData(0x07);
+		// EPD_M2_SendCommand(0x00);
+		// EPD_M2_SendData(0x07);
+		// EPD_S2_SendCommand(0x00);
+		// EPD_S2_SendData(0x07);
+		
+		//	panel setting for Display
+		EPD_M1_SendCommand(0x00);
+		EPD_M1_SendData(0x0f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+		EPD_S1_SendCommand(0x00);
+		EPD_S1_SendData(0x0f);
+		EPD_M2_SendCommand(0x00);
+		EPD_M2_SendData(0x03);
+		EPD_S2_SendCommand(0x00);
+		EPD_S2_SendData(0x03);
 
-    EPD_SetLut();
-    EPD_M1_ReadTemperature();
-    return 0;
+		// booster soft start
+		EPD_M1_SendCommand(0x06);
+		EPD_M1_SendData(0x17);	//A
+		EPD_M1_SendData(0x17);	//B
+		EPD_M1_SendData(0x39);	//C
+		EPD_M1_SendData(0x17);
+		EPD_M2_SendCommand(0x06);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x39);
+		EPD_M2_SendData(0x17);
+
+		//resolution setting
+		EPD_M1_SendCommand(0x61);
+		EPD_M1_SendData(0x02);
+		EPD_M1_SendData(0x88);	//source 648
+		EPD_M1_SendData(0x01);	//gate 492
+		EPD_M1_SendData(0xEC);
+		EPD_S1_SendCommand(0x61);
+		EPD_S1_SendData(0x02);
+		EPD_S1_SendData(0x90);	//source 656
+		EPD_S1_SendData(0x01);	//gate 492
+		EPD_S1_SendData(0xEC);
+		EPD_M2_SendCommand(0x61);
+		EPD_M2_SendData(0x02);
+		EPD_M2_SendData(0x90);	//source 656
+		EPD_M2_SendData(0x01);	//gate 492
+		EPD_M2_SendData(0xEC);
+		EPD_S2_SendCommand(0x61);
+		EPD_S2_SendData(0x02);
+		EPD_S2_SendData(0x88);	//source 648
+		EPD_S2_SendData(0x01);	//gate 492
+		EPD_S2_SendData(0xEC);
+
+		EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
+		EPD_M1S1M2S2_SendData(0x20);
+
+		EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
+		EPD_M1S1M2S2_SendData(0x11);
+		EPD_M1S1M2S2_SendData(0x07);
+
+		EPD_M1S1M2S2_SendCommand(0x60);//TCON
+		EPD_M1S1M2S2_SendData(0x22);
+
+		EPD_M1S1M2S2_SendCommand(0xE3);
+		EPD_M1S1M2S2_SendData(0x00);
+
+		EPD_M1_ReadTemperature();
+		return 0;
+	}
 }
 
 /******************************************************************************
@@ -214,8 +293,8 @@ void EPD_12in48B_Clear(void)
         for(x = 0; x < 81; x++) {
             EPD_S2_SendData(0x00);
         }
-    }
-
+    }          
+	
     // Turn On Display
     EPD_12in48B_TurnOnDisplay();
 }
@@ -304,9 +383,10 @@ void EPD_12in48B_TurnOnDisplay(void)
     EPD_M1S1M2S2_SendCommand(0x12); //Display Refresh
 
     // printf("M1 S1 M2 S2 \r\n");
+
     EPD_M1_ReadBusy();
     EPD_S1_ReadBusy();
-    EPD_M2_ReadBusy();
+	EPD_M2_ReadBusy();
     EPD_S2_ReadBusy();
 }
 
@@ -330,9 +410,12 @@ parameter:
 ******************************************************************************/
 static void EPD_Reset(void)
 {
+    DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
+    DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
+    DEV_Delay_ms(200);
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 0);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 0);
-    DEV_Delay_ms(10);
+    DEV_Delay_ms(5);    
     DEV_Digital_Write(EPD_M1S1_RST_PIN, 1);
     DEV_Digital_Write(EPD_M2S2_RST_PIN, 1);
     DEV_Delay_ms(200);
@@ -464,11 +547,13 @@ parameter:
 static void EPD_M1_ReadBusy(void)
 {
     UBYTE busy;
+	Debug("M1 Busy \r\n");
     do {
         EPD_M1_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_M1_BUSY_PIN);
         busy =!(busy & 0x01);
-    } while(0);
+		DEV_Delay_ms(200);
+    } while(busy);
     Debug("M1 Busy free\r\n");
     DEV_Delay_ms(200);
 
@@ -476,10 +561,12 @@ static void EPD_M1_ReadBusy(void)
 static void EPD_M2_ReadBusy(void)
 {
     UBYTE busy;
+    Debug("M2 Busy \r\n");
     do {
         EPD_M2_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_M2_BUSY_PIN);
         busy =!(busy & 0x01);
+		DEV_Delay_ms(200);
     } while(busy);
     Debug("M2 Busy free\r\n");
     DEV_Delay_ms(200);
@@ -487,10 +574,12 @@ static void EPD_M2_ReadBusy(void)
 static void EPD_S1_ReadBusy(void)
 {
     UBYTE busy;
+    Debug("S1 Busy \r\n");
     do {
         EPD_S1_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_S1_BUSY_PIN);
         busy =!(busy & 0x01);
+		DEV_Delay_ms(200);
     } while(busy);
     Debug("S1 Busy free\r\n");
     DEV_Delay_ms(200);
@@ -498,10 +587,12 @@ static void EPD_S1_ReadBusy(void)
 static void EPD_S2_ReadBusy(void)
 {
     UBYTE busy;
+    Debug("S2 Busy \r\n");
     do {
         EPD_S2_SendCommand(0x71);
         busy = DEV_Digital_Read(EPD_S2_BUSY_PIN);
         busy =!(busy & 0x01);
+		DEV_Delay_ms(200);
     } while(busy);
     Debug("S2 Busy free\r\n");
     DEV_Delay_ms(200);

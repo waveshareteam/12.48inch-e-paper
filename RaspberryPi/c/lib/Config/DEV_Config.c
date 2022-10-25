@@ -175,7 +175,7 @@ UBYTE DEV_ModuleInit(void)
     software_spi.MOSI_PIN = EPD_MOSI_PIN;
     software_spi.Mode = Mode0;
     software_spi.Type = Master;
-    software_spi.Clock = 10; 
+    software_spi.Clock = 10;
 	
 	DEV_GPIOConfig();
     return 0;
@@ -220,22 +220,22 @@ Info:
 void DEV_SPI_WriteByte(UBYTE value)
 {
     char i;
-    DEV_Delay_us(6);
+    DEV_Delay_us(5);
     switch(software_spi.Mode) {
     case Mode0: /* Clock Polarity is 0 and Clock Phase is 0 */
         DEV_Digital_Write(software_spi.SCLK_PIN, 0);
         for(i = 0; i < 8; i++) {
             DEV_Digital_Write(software_spi.SCLK_PIN, 0);
-            DEV_Delay_us(5);
+            DEV_Delay_us(10);
             if(value  & 0x80) {
                 DEV_Digital_Write(software_spi.MOSI_PIN, 1);
             } else {
                 DEV_Digital_Write(software_spi.MOSI_PIN, 0);
             }
             value = value << 1;
-            DEV_Delay_us(5);
+            DEV_Delay_us(10);
             DEV_Digital_Write(software_spi.SCLK_PIN, 1);
-            DEV_Delay_us(5);
+            DEV_Delay_us(10);
         }
         break;
     case Mode1: /* Clock Polarity is 0 and Clock Phase is 1 */
@@ -297,15 +297,15 @@ UBYTE DEV_SPI_ReadByte(UBYTE Reg)
     DEV_Delay_us(5);
     for(i = 0; i < 8; i++) {
         DEV_Digital_Write(software_spi.SCLK_PIN, 0);
-        DEV_Delay_us(5);
+        DEV_Delay_us(10);
         j = j << 1;
         if(DEV_Digital_Read(software_spi.MOSI_PIN) == 1)
             j |= 0x01;
         else
             j &= 0xfe;
-        DEV_Delay_us(5);
+        DEV_Delay_us(10);
         DEV_Digital_Write(software_spi.SCLK_PIN, 1);
-        DEV_Delay_us(5);
+        DEV_Delay_us(10);
     }
 
     //set mosi pin output

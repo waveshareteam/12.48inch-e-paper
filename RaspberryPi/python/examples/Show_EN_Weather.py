@@ -55,8 +55,10 @@ Black = ImageDraw.Draw(Blackimage)
 Other = ImageDraw.Draw(Otherimage)
 if(Color_Type == 1):
     Painting = Black
+    Painting_image = Blackimage
 else:
     Painting = Other
+    Painting_image = Otherimage
 ##################################################
 
 def Display_Init():
@@ -146,8 +148,8 @@ for i in range(0, 6):
             Wea[i], font = font25, fill = "BLUE")
             
     PNG = Image.open("Weather/"+ str(i) +".png")	
-    Otherimage.paste(PNG, (W_Proportion*i+73, H_Proportion + 80)) 
-
+    Painting_image.paste(PNG, (W_Proportion*i+73, H_Proportion + 80)) 
+    
     Black.text((W_Proportion*i+117-len(TemHigh[i]+u'°F')*15,H_Proportion + 170), 
             TemHigh[i]+u'°F', font = font45, fill = "BLUE")
 

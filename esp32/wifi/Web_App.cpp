@@ -47,7 +47,7 @@ void Web_EPD_LoadA();
 void Web_EPD_LoadB();
 void Web_EPD_Show();
 
-const char *WIFI_ssid = "Waveshare-TL-WR886N"; //"your ssid";
+const char *WIFI_ssid = "JSBPI"; //"your ssid";
 const char *WIFI_password = "waveshare0755";   //"your password";
 
 /* Server and IP address ------------------------------------------------------*/
@@ -77,7 +77,7 @@ void Web_Init(void)
 
     server.on("/", Web_SendHTML);
     server.on("/index.css", Web_SendCSS);
-    server.on("/index.js", Web_SendJS_A);
+	server.on("/Web_SendJS_A.js", Web_SendJS_A);
     server.on("/EPD", Web_EPD_Init);
     server.on("/LOADA", Web_EPD_LoadA);
     server.on("/LOADB", Web_EPD_LoadB);
@@ -101,11 +101,11 @@ void Web_EPD_Init()
     if(epd == "12.48inch e-Paper"){
         Serial.println("12.48inch e-Paper");
         EPD_12in48_Init();
-        EPD_12in48_Clear();
+        // EPD_12in48_Clear();
     }else if(epd == "12.48inch e-Paper (B)"){
         Serial.println("12.48inch e-Paper b");
         EPD_12in48B_Init();
-        EPD_12in48B_Clear();
+        // EPD_12in48B_Clear();
     }
     server.send(200, "text/plain", "Init ok\r\n");    
 }

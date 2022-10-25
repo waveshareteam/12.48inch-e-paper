@@ -4,9 +4,14 @@
 * | Function    :   Electronic paper driver
 * | Info	 :
 *----------------
-* |	This version:   V1.0
-* | Date	 :   2018-11-29
-* | Info	 :
+* |	This version:   V1.1
+* | Date	 	:   2022-09-13
+* | Info	 	:
+*----------------
+* Version	: V1.1
+* Date		: 2022-09-13 
+* Log		: Added support for V2
+*----------------
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documnetation files(the "Software"), to deal
@@ -29,6 +34,8 @@
 ******************************************************************************/
 #include "EPD_12in48b.h"
 #include "Debug.h"
+
+extern int Version;
 
 static void EPD_Reset(void);
 static void EPD_M1_SendCommand(UBYTE Reg);
@@ -63,93 +70,165 @@ UBYTE EPD_12in48B_Init(void)
 
     EPD_Reset();
 
-    //panel setting
-    EPD_M1_SendCommand(0x00);
-    EPD_M1_SendData(0x2f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
-    EPD_S1_SendCommand(0x00);
-    EPD_S1_SendData(0x2f);
-    EPD_M2_SendCommand(0x00);
-    EPD_M2_SendData(0x23);
-    EPD_S2_SendCommand(0x00);
-    EPD_S2_SendData(0x23);
+	if (Version == 1) {
+		//panel setting
+		EPD_M1_SendCommand(0x00);
+		EPD_M1_SendData(0x2f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+		EPD_S1_SendCommand(0x00);
+		EPD_S1_SendData(0x2f);
+		EPD_M2_SendCommand(0x00);
+		EPD_M2_SendData(0x23);
+		EPD_S2_SendCommand(0x00);
+		EPD_S2_SendData(0x23);
 
-    // POWER SETTING
-    EPD_M1_SendCommand(0x01);
-    EPD_M1_SendData(0x07);
-    EPD_M1_SendData(0x17);	//VGH=20V,VGL=-20V
-    EPD_M1_SendData(0x3F);	//VDH=15V
-    EPD_M1_SendData(0x3F);  //VDL=-15V
-    EPD_M1_SendData(0x0d);
-    EPD_M2_SendCommand(0x01);
-    EPD_M2_SendData(0x07);
-    EPD_M2_SendData(0x17);	//VGH=20V,VGL=-20V
-    EPD_M2_SendData(0x3F);	//VDH=15V
-    EPD_M2_SendData(0x3F);  //VDL=-15V
-    EPD_M2_SendData(0x0d);
+		// POWER SETTING
+		EPD_M1_SendCommand(0x01);
+		EPD_M1_SendData(0x07);
+		EPD_M1_SendData(0x17);	//VGH=20V,VGL=-20V
+		EPD_M1_SendData(0x3F);	//VDH=15V
+		EPD_M1_SendData(0x3F);  //VDL=-15V
+		EPD_M1_SendData(0x0d);
+		EPD_M2_SendCommand(0x01);
+		EPD_M2_SendData(0x07);
+		EPD_M2_SendData(0x17);	//VGH=20V,VGL=-20V
+		EPD_M2_SendData(0x3F);	//VDH=15V
+		EPD_M2_SendData(0x3F);  //VDL=-15V
+		EPD_M2_SendData(0x0d);
 
-    // booster soft start
-    EPD_M1_SendCommand(0x06);
-    EPD_M1_SendData(0x17);	//A
-    EPD_M1_SendData(0x17);	//B
-    EPD_M1_SendData(0x39);	//C
-    EPD_M1_SendData(0x17);
-    EPD_M2_SendCommand(0x06);
-    EPD_M2_SendData(0x17);
-    EPD_M2_SendData(0x17);
-    EPD_M2_SendData(0x39);
-    EPD_M2_SendData(0x17);
+		// booster soft start
+		EPD_M1_SendCommand(0x06);
+		EPD_M1_SendData(0x17);	//A
+		EPD_M1_SendData(0x17);	//B
+		EPD_M1_SendData(0x39);	//C
+		EPD_M1_SendData(0x17);
+		EPD_M2_SendCommand(0x06);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x39);
+		EPD_M2_SendData(0x17);
 
-    //resolution setting
-    EPD_M1_SendCommand(0x61);
-    EPD_M1_SendData(0x02);
-    EPD_M1_SendData(0x88);	//source 648
-    EPD_M1_SendData(0x01);	//gate 492
-    EPD_M1_SendData(0xEC);
-    EPD_S1_SendCommand(0x61);
-    EPD_S1_SendData(0x02);
-    EPD_S1_SendData(0x90);	//source 656
-    EPD_S1_SendData(0x01);	//gate 492
-    EPD_S1_SendData(0xEC);
-    EPD_M2_SendCommand(0x61);
-    EPD_M2_SendData(0x02);
-    EPD_M2_SendData(0x90);	//source 656
-    EPD_M2_SendData(0x01);	//gate 492
-    EPD_M2_SendData(0xEC);
-    EPD_S2_SendCommand(0x61);
-    EPD_S2_SendData(0x02);
-    EPD_S2_SendData(0x88);	//source 648
-    EPD_S2_SendData(0x01);	//gate 492
-    EPD_S2_SendData(0xEC);
+		//resolution setting
+		EPD_M1_SendCommand(0x61);
+		EPD_M1_SendData(0x02);
+		EPD_M1_SendData(0x88);	//source 648
+		EPD_M1_SendData(0x01);	//gate 492
+		EPD_M1_SendData(0xEC);
+		EPD_S1_SendCommand(0x61);
+		EPD_S1_SendData(0x02);
+		EPD_S1_SendData(0x90);	//source 656
+		EPD_S1_SendData(0x01);	//gate 492
+		EPD_S1_SendData(0xEC);
+		EPD_M2_SendCommand(0x61);
+		EPD_M2_SendData(0x02);
+		EPD_M2_SendData(0x90);	//source 656
+		EPD_M2_SendData(0x01);	//gate 492
+		EPD_M2_SendData(0xEC);
+		EPD_S2_SendCommand(0x61);
+		EPD_S2_SendData(0x02);
+		EPD_S2_SendData(0x88);	//source 648
+		EPD_S2_SendData(0x01);	//gate 492
+		EPD_S2_SendData(0xEC);
 
-    EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
-    EPD_M1S1M2S2_SendData(0x20);
+		EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
+		EPD_M1S1M2S2_SendData(0x20);
 
-    EPD_M1S1M2S2_SendCommand(0x30);	// PLL
-    EPD_M1S1M2S2_SendData(0x08);
+		EPD_M1S1M2S2_SendCommand(0x30);	// PLL
+		EPD_M1S1M2S2_SendData(0x08);
 
-    EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
-    EPD_M1S1M2S2_SendData(0x31);
-    EPD_M1S1M2S2_SendData(0x07);
+		EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
+		EPD_M1S1M2S2_SendData(0x31);
+		EPD_M1S1M2S2_SendData(0x07);
 
-    EPD_M1S1M2S2_SendCommand(0x60);//TCON
-    EPD_M1S1M2S2_SendData(0x22);
+		EPD_M1S1M2S2_SendCommand(0x60);//TCON
+		EPD_M1S1M2S2_SendData(0x22);
 
-    EPD_M1_SendCommand(0xE0);			//POWER SETTING
-    EPD_M1_SendData(0x01);
-    EPD_M2_SendCommand(0xE0);			//POWER SETTING
-    EPD_M2_SendData(0x01);
+		EPD_M1_SendCommand(0xE0);			//POWER SETTING
+		EPD_M1_SendData(0x01);
+		EPD_M2_SendCommand(0xE0);			//POWER SETTING
+		EPD_M2_SendData(0x01);
 
-    EPD_M1S1M2S2_SendCommand(0xE3);
-    EPD_M1S1M2S2_SendData(0x00);
+		EPD_M1S1M2S2_SendCommand(0xE3);
+		EPD_M1S1M2S2_SendData(0x00);
 
-    EPD_M1_SendCommand(0x82);
-    EPD_M1_SendData(0x1c);
-    EPD_M2_SendCommand(0x82);
-    EPD_M2_SendData(0x1c);
+		EPD_M1_SendCommand(0x82);
+		EPD_M1_SendData(0x1c);
+		EPD_M2_SendCommand(0x82);
+		EPD_M2_SendData(0x1c);
+		
+		EPD_SetLut();
+		return 0;
+	}
+	else if(Version == 2) {
+		// panel setting for Clear
+		// EPD_M1_SendCommand(0x00);
+		// EPD_M1_SendData(0x07);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+		// EPD_S1_SendCommand(0x00);
+		// EPD_S1_SendData(0x07);
+		// EPD_M2_SendCommand(0x00);
+		// EPD_M2_SendData(0x07);
+		// EPD_S2_SendCommand(0x00);
+		// EPD_S2_SendData(0x07);
+		
+		// panel setting for Display
+		EPD_M1_SendCommand(0x00);
+		EPD_M1_SendData(0x0f);	//KW-3f   KWR-2F	BWROTP 0f	BWOTP 1f
+		EPD_S1_SendCommand(0x00);
+		EPD_S1_SendData(0x0f);
+		EPD_M2_SendCommand(0x00);
+		EPD_M2_SendData(0x03);
+		EPD_S2_SendCommand(0x00);
+		EPD_S2_SendData(0x03);
 
-    EPD_SetLut();
-    // EPD_M1_ReadTemperature();
-    return 0;
+		// booster soft start
+		EPD_M1_SendCommand(0x06);
+		EPD_M1_SendData(0x17);	//A
+		EPD_M1_SendData(0x17);	//B
+		EPD_M1_SendData(0x39);	//C
+		EPD_M1_SendData(0x17);
+		EPD_M2_SendCommand(0x06);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x17);
+		EPD_M2_SendData(0x39);
+		EPD_M2_SendData(0x17);
+
+		//resolution setting
+		EPD_M1_SendCommand(0x61);
+		EPD_M1_SendData(0x02);
+		EPD_M1_SendData(0x88);	//source 648
+		EPD_M1_SendData(0x01);	//gate 492
+		EPD_M1_SendData(0xEC);
+		EPD_S1_SendCommand(0x61);
+		EPD_S1_SendData(0x02);
+		EPD_S1_SendData(0x90);	//source 656
+		EPD_S1_SendData(0x01);	//gate 492
+		EPD_S1_SendData(0xEC);
+		EPD_M2_SendCommand(0x61);
+		EPD_M2_SendData(0x02);
+		EPD_M2_SendData(0x90);	//source 656
+		EPD_M2_SendData(0x01);	//gate 492
+		EPD_M2_SendData(0xEC);
+		EPD_S2_SendCommand(0x61);
+		EPD_S2_SendData(0x02);
+		EPD_S2_SendData(0x88);	//source 648
+		EPD_S2_SendData(0x01);	//gate 492
+		EPD_S2_SendData(0xEC);
+
+		EPD_M1S1M2S2_SendCommand(0x15);	//DUSPI
+		EPD_M1S1M2S2_SendData(0x20);
+
+		EPD_M1S1M2S2_SendCommand(0x50);	//Vcom and data interval setting
+		EPD_M1S1M2S2_SendData(0x11);
+		EPD_M1S1M2S2_SendData(0x07);
+
+		EPD_M1S1M2S2_SendCommand(0x60);//TCON
+		EPD_M1S1M2S2_SendData(0x22);
+
+		EPD_M1S1M2S2_SendCommand(0xE3);
+		EPD_M1S1M2S2_SendData(0x00);
+		
+		EPD_M1_ReadTemperature();
+		return 0;
+	}
 }
 
 /******************************************************************************

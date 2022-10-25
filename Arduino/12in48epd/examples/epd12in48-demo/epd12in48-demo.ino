@@ -7,20 +7,23 @@
 void setup()
 {
     DEV_ModuleInit();
-    Serial.print("e-Paper init and clear \n");
+    Serial.print("12.48 e-Paper\n");
  
 }
 
 void loop()
 {
-   EPD_12in48_Init();
-    SRAM_Init();
-    EPD_12in48_Clear();
-     DEV_Delay_ms(180000);  
-    EPD_12in48_ClearBlack();
-    DEV_Delay_ms(180000);  
+	Serial.print("Init \n");
+	EPD_12in48_Init();
+	SRAM_Init();
+	    
+    Serial.print("Clear \n");
+	EPD_12in48_Clear();
+	DEV_Delay_ms(500);  
+	EPD_12in48_ClearBlack();
+	DEV_Delay_ms(500);  
 #if 0
-    // Serial.print("New Image and clear\n");
+    Serial.print("New Image and clear\n");
     Paint_NewImage(BLACKIMAGE,1304, 984, ROTATE_0, WHITE);
     Paint_Clear();
     
@@ -90,12 +93,8 @@ void loop()
     EPD_12in48_Display();
 #endif   
 
-    DEV_Delay_ms(180000);
+    DEV_Delay_ms(500);
     Serial.print("EPD_Sleep\n");
     EPD_12in48_Clear();
     EPD_12in48_Sleep();
-
-    DEV_Delay_ms(180000);
-
-
 }

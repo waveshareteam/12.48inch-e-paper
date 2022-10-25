@@ -103,7 +103,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>11</nTsel>
+        <nTsel>6</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -333,8 +333,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\User\e-Paper\EPD_12in48.c</PathWithFileName>
-      <FilenameWithoutPath>EPD_12in48.c</FilenameWithoutPath>
+      <PathWithFileName>..\User\e-Paper\ImageData.c</PathWithFileName>
+      <FilenameWithoutPath>ImageData.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -345,8 +345,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\User\e-Paper\ImageData.c</PathWithFileName>
-      <FilenameWithoutPath>ImageData.c</FilenameWithoutPath>
+      <PathWithFileName>..\User\e-Paper\EPD_12in48.c</PathWithFileName>
+      <FilenameWithoutPath>EPD_12in48.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -691,6 +691,18 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\User\examples\EPD_12in48B_test.c</PathWithFileName>
       <FilenameWithoutPath>EPD_12in48B_test.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>9</GroupNumber>
+      <FileNumber>38</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\User\examples\EPD_12in48B_V2_test.c</PathWithFileName>
+      <FilenameWithoutPath>EPD_12in48B_V2_test.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -149,9 +149,8 @@ BMP_table   = re.split(' ', BMP_table_t)
 
 
 # print Date[0][5:]
-print("12.48inch e-paper B Demo...")
-Display_Init()
 
+Display_Init()
 
 if(Color_Type == 1):
     Painting = Black

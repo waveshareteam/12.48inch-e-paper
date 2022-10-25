@@ -8,7 +8,7 @@ libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__)
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
-import epd12in48b
+import epd12in48b_V2
 import time
 
 from PIL import ImageDraw
@@ -20,7 +20,7 @@ from PIL import Image
 
 
 print("12.48inch e-paper B Demo...")
-epd = epd12in48b.EPD()
+epd = epd12in48b_V2.EPD()
 # Initialize library.
 epd.Init()
 
@@ -29,8 +29,8 @@ print("clearing...")
 epd.clear()
 
 # Create blank image for drawing.
-Blackimage = Image.new("1", (epd12in48b.EPD_WIDTH, epd12in48b.EPD_HEIGHT), 255)
-Redimage = Image.new("1", (epd12in48b.EPD_WIDTH, epd12in48b.EPD_HEIGHT), 255)
+Blackimage = Image.new("1", (epd12in48b_V2.EPD_WIDTH, epd12in48b_V2.EPD_HEIGHT), 255)
+Redimage = Image.new("1", (epd12in48b_V2.EPD_WIDTH, epd12in48b_V2.EPD_HEIGHT), 255)
 Blackdraw = ImageDraw.Draw(Blackimage)
 Reddraw = ImageDraw.Draw(Redimage)
 
@@ -54,8 +54,8 @@ epd.display(Blackimage, Redimage)
 time.sleep(2)
 
 print("open pic...")
-Blackimage2 = Image.new("1", (epd12in48b.EPD_WIDTH, epd12in48b.EPD_HEIGHT), 255)
-Redimage2 = Image.new("1", (epd12in48b.EPD_WIDTH, epd12in48b.EPD_HEIGHT), 255)
+Blackimage2 = Image.new("1", (epd12in48b_V2.EPD_WIDTH, epd12in48b_V2.EPD_HEIGHT), 255)
+Redimage2 = Image.new("1", (epd12in48b_V2.EPD_WIDTH, epd12in48b_V2.EPD_HEIGHT), 255)
 Redimage2 = Image.open(picdir+"/1304x984.jpg")	
 epd.display(Blackimage2, Redimage2)
 time.sleep(2)

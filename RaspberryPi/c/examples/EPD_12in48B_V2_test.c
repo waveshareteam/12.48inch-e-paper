@@ -3,9 +3,11 @@
 
 extern int Version;
 
-int EPD_12in48B_test(void)
+int EPD_12in48B_V2_test(void)
 {
-	Version = 1;
+	// Specify the version
+	Version = 2;
+	
 	printf("12.48inch e-Paper B demo\r\n");
     DEV_ModuleInit();
 

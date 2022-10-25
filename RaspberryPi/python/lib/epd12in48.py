@@ -307,7 +307,7 @@ class EPD(object):
         time.sleep(0.2) 
         epdconfig.digital_write(self.EPD_M1S1_RST_PIN, 0) 
         epdconfig.digital_write(self.EPD_M2S2_RST_PIN, 0) 
-        time.sleep(0.02) 
+        time.sleep(0.01) 
         epdconfig.digital_write(self.EPD_M1S1_RST_PIN, 1) 
         epdconfig.digital_write(self.EPD_M2S2_RST_PIN, 1) 
         time.sleep(0.2) 
@@ -391,7 +391,7 @@ class EPD(object):
         time.sleep(0.01) 
         
         # temp = epdconfig.spi_readbyte(0x00)
-        temp = 19
+        temp = 25
         print("Read Temperature Reg:%d"%temp)
         epdconfig.digital_write(self.EPD_M1_CS_PIN, 1) 
         # temp =0x29
