@@ -133,7 +133,7 @@ class EPD(object):
         self.M1_ReadTemperature()
         
     def display(self, BlackImage, RedImage):
-        start = time.clock()
+        start = time.perf_counter()
         
         Blackbuf = [0x00] * int(self.width * self.height / 8)
         blackconvert = BlackImage.convert('1')       
@@ -205,13 +205,13 @@ class EPD(object):
             for x in  range(81, 163):
                 self.S1_SendData(~Redbuf[y*163 + x])
                 
-        end = time.clock()
+        end = time.perf_counter()
         print("use time: %f"%(end - start))
         self.TurnOnDisplay()
 
     def clear(self):
         """Clear contents of image buffer"""
-        start = time.clock()
+        start = time.perf_counter()
         
         self.S2_SendCommand(0x10)
         for y in  range(0, 492):
@@ -249,7 +249,7 @@ class EPD(object):
             for x in  range(81, 163):
                 self.S1_SendData(0x00)
                 
-        end = time.clock()
+        end = time.perf_counter()
         print (end)
         print (start)
         print("use time: %f" %(end - start))
