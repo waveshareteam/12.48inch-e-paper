@@ -46,7 +46,7 @@ void DEV_Digital_Write(UWORD Pin, UBYTE Value)
 #elif USE_WIRINGPI_LIB
 	digitalWrite(Pin, Value);
 #elif USE_DEV_LIB
-	SYSFS_GPIO_Write(Pin, Value);
+	GPIOD_Write(Pin, Value);
 #endif
 }
 
@@ -63,7 +63,7 @@ UBYTE DEV_Digital_Read(UWORD Pin)
 #elif USE_WIRINGPI_LIB
 	Read_value = digitalRead(Pin);
 #elif USE_DEV_LIB
-	Read_value = SYSFS_GPIO_Read(Pin);
+	Read_value = GPIOD_Read(Pin);
 #endif
 	return Read_value;
 }
@@ -90,12 +90,11 @@ void DEV_GPIO_Mode(UWORD Pin, UWORD Mode)
 		// Debug (" %d OUT \r\n",Pin);
 	}
 #elif USE_DEV_LIB
-	SYSFS_GPIO_Export(Pin);
-	if(Mode == 0 || Mode == SYSFS_GPIO_IN) {
-		SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_IN);
+	if(Mode == 0 || Mode == GPIOD_IN) {
+		GPIOD_Direction(Pin, GPIOD_IN);
 		// Debug("IN Pin = %d\r\n",Pin);
 	} else {
-		SYSFS_GPIO_Direction(Pin, SYSFS_GPIO_OUT);
+		GPIOD_Direction(Pin, GPIOD_OUT);
 		// Debug("OUT Pin = %d\r\n",Pin);
 	}
 #endif
@@ -168,6 +167,7 @@ UBYTE DEV_ModuleInit(void)
 		printf("set wiringPi lib success !!! \r\n");
 	}
 #elif USE_DEV_LIB
+    GPIOD_Export();
     printf("Write and read GPIO  \r\n");
 #endif
     //software spi configure
@@ -332,7 +332,7 @@ void DEV_ModuleExit(void)
 #ifdef USE_BCM2835_LIB
 	bcm2835_close();
 #elif USE_WIRINGPI_LIB
-
+    GPIOD_Unexport_GPIO();
 #elif USE_DEV_LIB
 
 #endif

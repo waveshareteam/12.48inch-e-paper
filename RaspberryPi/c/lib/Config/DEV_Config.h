@@ -38,7 +38,7 @@
 #elif USE_WIRINGPI_LIB
     #include <wiringPi.h>
 #elif USE_DEV_LIB
-    #include "RPI_sysfs_gpio.h"
+    #include "RPI_gpiod.h"
 #endif
 
 #include <stdint.h>

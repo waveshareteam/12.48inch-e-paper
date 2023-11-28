@@ -26,7 +26,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-import RPi.GPIO as GPIO
 import time
 import os
 import logging
@@ -72,12 +71,11 @@ for find_dir in find_dirs:
 if spi is None:
     RuntimeError('Cannot find DEV_Config.so')
 
-
 def digital_write(pin, value):
-    GPIO.output(pin, value)
+    spi.DEV_Digital_Write(pin, value)
 
 def digital_read(pin):
-    return GPIO.input(pin)
+    return spi.DEV_Digital_Read(pin)
 
 def spi_writebyte(value): 
     spi.DEV_SPI_WriteByte(value)
@@ -86,66 +84,14 @@ def delay_ms(delaytime):
     time.sleep(delaytime / 1000.0)
         
 def module_init():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(EPD_SCK_PIN, GPIO.OUT)    
-    GPIO.setup(EPD_MOSI_PIN, GPIO.OUT)
-    
-    logging.debug("python call bcm2835 Lib")
-    
-    GPIO.setup(EPD_M2S2_RST_PIN, GPIO.OUT)    
-    GPIO.setup(EPD_M1S1_RST_PIN, GPIO.OUT)
-    GPIO.setup(EPD_M2S2_DC_PIN, GPIO.OUT)
-    GPIO.setup(EPD_M1S1_DC_PIN, GPIO.OUT)
-    GPIO.setup(EPD_S1_CS_PIN, GPIO.OUT)
-    GPIO.setup(EPD_S2_CS_PIN, GPIO.OUT)
-    GPIO.setup(EPD_M1_CS_PIN, GPIO.OUT)
-    GPIO.setup(EPD_M2_CS_PIN, GPIO.OUT)
-
-    GPIO.setup(EPD_S1_BUSY_PIN, GPIO.IN)
-    GPIO.setup(EPD_S2_BUSY_PIN, GPIO.IN)
-    GPIO.setup(EPD_M1_BUSY_PIN, GPIO.IN)
-    GPIO.setup(EPD_M2_BUSY_PIN, GPIO.IN)
-    
-    digital_write(EPD_M1_CS_PIN, 1)
-    digital_write(EPD_S1_CS_PIN, 1)
-    digital_write(EPD_M2_CS_PIN, 1)
-    digital_write(EPD_S2_CS_PIN, 1)
-    
-    digital_write(EPD_M2S2_RST_PIN, 0)
-    digital_write(EPD_M1S1_RST_PIN, 0)
-    digital_write(EPD_M2S2_DC_PIN, 1)
-    digital_write(EPD_M1S1_DC_PIN, 1)
-
     spi.DEV_ModuleInit()
 
 def module_exit():
-    digital_write(EPD_M2S2_RST_PIN, 0)
-    digital_write(EPD_M1S1_RST_PIN, 0)
-    digital_write(EPD_M2S2_DC_PIN, 0)
-    digital_write(EPD_M1S1_DC_PIN, 0)
-    digital_write(EPD_S1_CS_PIN, 1)
-    digital_write(EPD_S2_CS_PIN, 1)
-    digital_write(EPD_M1_CS_PIN, 1)
-    digital_write(EPD_M2_CS_PIN, 1)
+    spi.DEV_ModuleExit()
+
 
 def spi_readbyte(Reg):
-    GPIO.setup(EPD_MOSI_PIN, GPIO.IN)
-    j=0
-    # time.sleep(0.01)
-    for i in range(0, 8):
-        GPIO.output(EPD_SCK_PIN, GPIO.LOW) 
-        # time.sleep(0.01) 
-        j = j << 1 
-        if(GPIO.input(EPD_MOSI_PIN) == GPIO.HIGH):
-            j |= 0x01
-        else:
-            j &= 0xfe 
-        # time.sleep(0.01)
-        GPIO.output(EPD_SCK_PIN, GPIO.HIGH) 
-        # time.sleep(0.01)  
-    GPIO.setup(EPD_MOSI_PIN, GPIO.OUT)
-    return j 
+    return spi.DEV_SPI_ReadByte(Reg)
     
 def delay_ms(delaytime):
     time.sleep(delaytime / 1000.0)

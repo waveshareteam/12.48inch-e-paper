@@ -19,15 +19,19 @@ USELIB = USE_BCM2835_LIB
 
 ifeq ($(USELIB), USE_BCM2835_LIB)
     LIB = -lbcm2835 -lm 
+	OBJ_O := $(filter-out ${DIR_BIN}/RPI_gpiod.o , ${OBJ_O})
 else ifeq ($(USELIB), USE_WIRINGPI_LIB)
     LIB = -lwiringPi -lm 
+	OBJ_O := $(filter-out ${DIR_BIN}/RPI_gpiod.o , ${OBJ_O})
 else ifeq ($(USELIB), USE_DEV_LIB)
-    LIB = -lm 
+    LIB = -lgpiod -lm 
 endif
 
 MSG = -g -O0 -Wall
 DEBUG = -D DEBUG 
 CFLAGS += $(MSG) $(DEBUG) -D $(USELIB)
+
+$(shell mkdir -p $(DIR_BIN))
 
 ${TARGET}:${OBJ_O}
 	$(CC) $(CFLAGS) $(OBJ_O) -o $@ $(LIB)  -I $(DIR_GUI)
