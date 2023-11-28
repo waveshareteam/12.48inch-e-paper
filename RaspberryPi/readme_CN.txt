@@ -42,6 +42,21 @@ EPD_S2_BUSY_PIN   -> 24
 3.基本使用：
 由于本工程是一个综合工程，对于使用而言，你可能需要阅读以下内容：
 C语言
+    0.注意事项
+       Pi5不支持 USE_BCM2835_LIB、USE_WIRINGPI_LIB
+       需要将Makefile中的编译环境改成  USELIB = USE_DEV_LIB
+       可以不开启SPI 或者在 /boot/config.txt中进行以下操作
+       sudo nano /boot/config.txt
+       屏蔽掉：
+       #dtparam=spi=on
+       添加：
+       dtoverlay=spi0-0cs
+       重启：
+       sudo reboot
+
+       Pi4支持 USE_BCM2835_LIB、USE_WIRINGPI_LIB 、USE_DEV_LIB
+       注意：在使用 USE_DEV_LIB 不要开启 SPI 
+
     1. 安装库
         BCM2835库参见 ：http：//www.airspayce.com/mikem/bcm2835/
         WiringPi库参见：http://wiringpi.com/download-and-install/

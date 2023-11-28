@@ -40,6 +40,23 @@ EPD_S2_BUSY_PIN   -> 24
 
 3. Basic use:
 C language
+    0. Caveats
+       Pi5 does not support USE_BCM2835_LIB, USE_WIRINGPI_LIB
+       You need to change the build environment in the Makefile to USELIB = USE_DEV_LIB
+       You can do this without SPI or in /boot/config.txt
+       sudo nano /boot/config.txt
+       Block it:
+       #dtparam=spi=on
+       Add:
+       dtoverlay=spi0-0cs
+       Restart:
+       sudo reboot
+
+       Pi4 supports USE_BCM2835_LIB, USE_WIRINGPI_LIB, and USE_DEV_LIB
+       Note: Do not enable SPI when using USE_DEV_LIB
+
+ 
+
      1. Install the library
          BCM2835 library see: http://www.airspayce.com/mikem/bcm2835/
          WiringPi library see: http://wiringpi.com/download-and-install/
