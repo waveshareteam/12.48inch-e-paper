@@ -16,10 +16,7 @@ import epd12in48b
 from Weather import Get_CN_Weather
 import time
 
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
-from PIL import ImageColor
+from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 from PIL import Image
 
@@ -37,8 +34,7 @@ if (len(sys.argv) == 1):
     import epd12in48
     print ('epd12in48')
     Color_Type   = 1
-    Inage_WIDTH  = epd12in48.EPD_WIDTH
-    Inage_HEIGHT = epd12in48.EPD_HEIGHT
+    Inage_WIDTH, InageHEIGHT = epd12in48.EPD_WIDTH, epd12in48.EPD_HEIGHT
     epd = epd12in48.EPD()
     
 elif(sys.argv[1] == 'help' or sys.argv[1] == 'HELP'):
@@ -52,8 +48,7 @@ elif(sys.argv[1] == 'B' or sys.argv[1] == 'b'):
     import epd12in48b
     print ('epd12in48b')
     Color_Type   = 2
-    Inage_WIDTH  = epd12in48b.EPD_WIDTH
-    Inage_HEIGHT = epd12in48b.EPD_HEIGHT
+    Inage_WIDTH, Inage_HEIGHT = epd12in48b.EPD_WIDTH, epd12in48b.EPD_HEIGHT
     epd = epd12in48b.EPD()
 
 Blackimage = Image.new("1", (Inage_WIDTH, Inage_HEIGHT), 255)
