@@ -37,7 +37,11 @@
     #include <bcm2835.h>
 #elif USE_WIRINGPI_LIB
     #include <wiringPi.h>
-#elif USE_DEV_LIB
+#elif USE_LGPIO_LIB
+    #include <lgpio.h>
+    #define LFLAGS 0
+    #define NUM_MAXBUF  4
+#elif USE_GPIOD_LIB
     #include "RPI_gpiod.h"
 #endif
 

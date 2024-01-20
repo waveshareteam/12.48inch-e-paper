@@ -13,9 +13,10 @@ CC = gcc
 
 
 
-USELIB = USE_BCM2835_LIB
+# USELIB = USE_BCM2835_LIB
 # USELIB = USE_WIRINGPI_LIB
-# USELIB = USE_DEV_LIB
+USELIB = USE_LGPIO_LIB
+# USELIB = USE_GPIOD_LIB
 
 ifeq ($(USELIB), USE_BCM2835_LIB)
     LIB = -lbcm2835 -lm 
@@ -23,7 +24,10 @@ ifeq ($(USELIB), USE_BCM2835_LIB)
 else ifeq ($(USELIB), USE_WIRINGPI_LIB)
     LIB = -lwiringPi -lm 
 	OBJ_O := $(filter-out ${DIR_BIN}/RPI_gpiod.o , ${OBJ_O})
-else ifeq ($(USELIB), USE_DEV_LIB)
+else ifeq ($(USELIB), USE_LGPIO_LIB)
+    LIB = -llgpio -lm 
+	OBJ_O := $(filter-out ${DIR_BIN}/RPI_gpiod.o , ${OBJ_O})
+else ifeq ($(USELIB), USE_GPIOD_LIB)
     LIB = -lgpiod -lm 
 endif
 

@@ -4,13 +4,13 @@
 * | Function    :   Help with use
 * | Info        :
 *----------------
-* |	This version:   V1.0
-* | Date        :   2019-06-25
+* |	This version:   V1.2
+* | Date        :   2024-01-20
 * | Info        :   Here is an English version of the documentation for your quick use.
 ******************************************************************************/
 This file is to help you use this routine.
 1. Basic information:
-This routine was developed based on Raspberry Pi 3B, and the routines were verified on Raspberry Pi 3B.
+This routine was developed based on Raspberry Pi 4B, and the routines were verified on Raspberry Pi 4B, Raspberry Pi 5.
 This routine was verified using the 12.48inch e-Paper Module.
 This example uses an analog SPI.
 
@@ -40,27 +40,13 @@ EPD_S2_BUSY_PIN   -> 24
 
 3. Basic use:
 C language
-    0. Caveats
-       Pi5 does not support USE_BCM2835_LIB, USE_WIRINGPI_LIB
-       You need to change the build environment in the Makefile to USELIB = USE_DEV_LIB
-       You can do this without SPI or in /boot/config.txt
-       sudo nano /boot/config.txt
-       Block it:
-       #dtparam=spi=on
-       Add:
-       dtoverlay=spi0-0cs
-       Restart:
-       sudo reboot
-
-       Pi4 supports USE_BCM2835_LIB, USE_WIRINGPI_LIB, and USE_DEV_LIB
-       Note: Do not enable SPI when using USE_DEV_LIB
-
- 
-
      1. Install the library
+         LG library see: https://github.com/gpiozero/lg
+         GPIOD library is available on our website.
          BCM2835 library see: http://www.airspayce.com/mikem/bcm2835/
          WiringPi library see: http://wiringpi.com/download-and-install/
-         Note: For Raspberry Pi 4, the WiringPi library needs to be updated to version 2.52 or above.
+         Note:     For Raspberry PI 5, only LG and GPIOD libraries are supported
+                       For Raspberry Pi 4, the WiringPi library needs to be updated to version 2.52 or above.
 
      2. Change the current directory to the location of the Makefile and demo files.
      3. Compile the file:
@@ -68,10 +54,11 @@ C language
                  Make DEBUG = -DDEBUG
              Using different libraries needs to be modified in the Makefile
                  # USELIB = USE_BCM2835_LIB
-                 USELIB = USE_WIRINGPI_LIB
-                 # USELIB = USE_DEV_LIB
-             Note: USE_DEV_LIB is a read file IO control device, which is slow but does not require any libraries to be installed.
-             In this example, it is not recommended to use USE_DEV_LIB, and the analog SPI and file control IO port is extremely slow.
+                 # USELIB = USE_WIRINGPI_LIB
+                 USELIB = USE_LGPIO_LIB
+                 # USELIB = USE_GPIOD_LIB
+             Note: USE_GPIOD_LIBis a read file IO control device, which is slow but does not require any libraries to be installed.
+             In this example, it is not recommended to use USE_GPIOD_LIBand the analog SPI and file control IO port is extremely slow.
     4. Run the demo routine
          Run: sudo ./epd
 
@@ -139,3 +126,5 @@ Python
         Requests.get(Url, timeout=5)
         Url: URL
         Timeout: timeout
+
+

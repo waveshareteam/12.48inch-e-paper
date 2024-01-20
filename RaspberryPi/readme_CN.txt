@@ -4,14 +4,14 @@
 * | Function    :   Help with use
 * | Info        :
 *----------------
-* |	This version:   V1.1
-* | Date        :   2022-09-14
+* |	This version:   V1.2
+* | Date        :   2024-01-20
 * | Info        :   在这里提供一个中文版本的使用文档，以便你的快速使用
 ******************************************************************************/
 这个文件是帮助您使用本例程。
 
 1.基本信息：
-本例程是基于树莓派3B进行开发的，例程均在树莓派3B上进行了验证;
+本例程是基于树莓派4B进行开发的，例程均在树莓派4B、树莓派5上进行了验证;
 本例程使用12.48inch e-Paper Module模块进行了验证。
 本例程使用的是模拟SPI。
 
@@ -42,36 +42,25 @@ EPD_S2_BUSY_PIN   -> 24
 3.基本使用：
 由于本工程是一个综合工程，对于使用而言，你可能需要阅读以下内容：
 C语言
-    0.注意事项
-       Pi5不支持 USE_BCM2835_LIB、USE_WIRINGPI_LIB
-       需要将Makefile中的编译环境改成  USELIB = USE_DEV_LIB
-       可以不开启SPI 或者在 /boot/config.txt中进行以下操作
-       sudo nano /boot/config.txt
-       屏蔽掉：
-       #dtparam=spi=on
-       添加：
-       dtoverlay=spi0-0cs
-       重启：
-       sudo reboot
-
-       Pi4支持 USE_BCM2835_LIB、USE_WIRINGPI_LIB 、USE_DEV_LIB
-       注意：在使用 USE_DEV_LIB 不要开启 SPI 
-
     1. 安装库
+        LG库参见：https://github.com/gpiozero/lg
+        GPIOD 库参见我们官网；
         BCM2835库参见 ：http：//www.airspayce.com/mikem/bcm2835/
         WiringPi库参见：http://wiringpi.com/download-and-install/
-        注: 对于树莓派4，WiringPi库需要更新为2.52或者以上版本才可以
+        注: 	对于树莓派5，只支持LG库与GPIOD库
+	对于树莓派4，WiringPi库需要更新为2.52或者以上版本才可以
 
     2. 将当前目录更改为Makefile和demo文件所在的位置。
     3. 编译文件：
             如果需要查看调试信息，请清除执行：
                 make DEBUG = -DDEBUG
             使用不同的库需要在Makefile文件里去修改
-                # USELIB = USE_BCM2835_LIB　　　　
-                USELIB = USE_WIRINGPI_LIB
-                # USELIB = USE_DEV_LIB
-            注: USE_DEV_LIB为读取文件IO控制设备，速度慢但是不需要安装任何库
-                在本例程成不建议使用USE_DEV_LIB,采用模拟SPI和文件控制IO口速度极其慢。
+                # USELIB = USE_BCM2835_LIB
+                # USELIB = USE_WIRINGPI_LIB
+                USELIB = USE_LGPIO_LIB
+                # USELIB = USE_GPIOD_LIB
+            注: USE_GPIOD_LIB为读取文件IO控制设备，速度慢但是不需要安装任何库
+                在本例程成不建议使用USE_GPIOD_LIB采用模拟SPI和文件控制IO口速度极其慢。
     4. 运行演示例程
         运行: sudo ./epd
 python
@@ -138,6 +127,8 @@ python
         requests.get(Url, timeout=5)
         Url : 网址
         timeout： 超时
+
+
 
 
 

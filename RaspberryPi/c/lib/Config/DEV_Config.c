@@ -32,6 +32,11 @@
 ******************************************************************************/
 #include "DEV_Config.h"
 
+#if USE_LGPIO_LIB
+int GPIO_Handle;
+int SPI_Handle;
+#endif
+
 SOFTWARE_SPI software_spi;
 
 /******************************************************************************
@@ -45,7 +50,9 @@ void DEV_Digital_Write(UWORD Pin, UBYTE Value)
 	bcm2835_gpio_write(Pin, Value);
 #elif USE_WIRINGPI_LIB
 	digitalWrite(Pin, Value);
-#elif USE_DEV_LIB
+#elif  USE_LGPIO_LIB  
+    lgGpioWrite(GPIO_Handle, Pin, Value);
+#elif USE_GPIOD_LIB
 	GPIOD_Write(Pin, Value);
 #endif
 }
@@ -62,7 +69,9 @@ UBYTE DEV_Digital_Read(UWORD Pin)
 	Read_value = bcm2835_gpio_lev(Pin);
 #elif USE_WIRINGPI_LIB
 	Read_value = digitalRead(Pin);
-#elif USE_DEV_LIB
+#elif  USE_LGPIO_LIB  
+    Read_value = lgGpioRead(GPIO_Handle,Pin);
+#elif USE_GPIOD_LIB
 	Read_value = GPIOD_Read(Pin);
 #endif
 	return Read_value;
@@ -89,7 +98,15 @@ void DEV_GPIO_Mode(UWORD Pin, UWORD Mode)
 		pinMode(Pin, OUTPUT);
 		// Debug (" %d OUT \r\n",Pin);
 	}
-#elif USE_DEV_LIB
+#elif  USE_LGPIO_LIB  
+    if(Mode == 0 || Mode == LG_SET_INPUT){
+        lgGpioClaimInput(GPIO_Handle,LFLAGS,Pin);
+        // printf("IN Pin = %d\r\n",Pin);
+    }else{
+        lgGpioClaimOutput(GPIO_Handle, LFLAGS, Pin, LG_LOW);
+        // printf("OUT Pin = %d\r\n",Pin);
+    }
+#elif USE_GPIOD_LIB
 	if(Mode == 0 || Mode == GPIOD_IN) {
 		GPIOD_Direction(Pin, GPIOD_IN);
 		// Debug("IN Pin = %d\r\n",Pin);
@@ -166,7 +183,35 @@ UBYTE DEV_ModuleInit(void)
 	} else {
 		printf("set wiringPi lib success !!! \r\n");
 	}
-#elif USE_DEV_LIB
+#elif  USE_LGPIO_LIB
+    char buffer[NUM_MAXBUF];
+    FILE *fp;
+
+    fp = popen("cat /proc/cpuinfo | grep 'Raspberry Pi 5'", "r");
+    if (fp == NULL) {
+        printf("It is not possible to determine the model of the Raspberry PI\n");
+        return -1;
+    }
+
+    if(fgets(buffer, sizeof(buffer), fp) != NULL)
+    {
+        GPIO_Handle = lgGpiochipOpen(4);
+        if (GPIO_Handle < 0)
+        {
+            printf( "gpiochip4 Export Failed\n");
+            return -1;
+        }
+    }
+    else
+    {
+        GPIO_Handle = lgGpiochipOpen(0);
+        if (GPIO_Handle < 0)
+        {
+            printf( "gpiochip0 Export Failed\n");
+            return -1;
+        }
+    }
+#elif USE_GPIOD_LIB
     GPIOD_Export();
     printf("Write and read GPIO  \r\n");
 #endif
@@ -204,7 +249,9 @@ void DEV_Delay_ms(UDOUBLE xms)
 	bcm2835_delay(xms);
 #elif USE_WIRINGPI_LIB
 	delay(xms);
-#elif USE_DEV_LIB
+#elif  USE_LGPIO_LIB  
+    lguSleep(xms/1000.0);
+#elif USE_GPIOD_LIB
 	UDOUBLE i;
 	for(i=0; i < xms; i++) {
 		usleep(1000);
@@ -333,7 +380,10 @@ void DEV_ModuleExit(void)
 	bcm2835_close();
 #elif USE_WIRINGPI_LIB
     GPIOD_Unexport_GPIO();
-#elif USE_DEV_LIB
+#elif USE_LGPIO_LIB 
+    // lgGpiochipClose(GPIO_Handle);
+#elif USE_GPIOD_LIB
+    GPIOD_Unexport_GPIO();
 
 #endif
 }
