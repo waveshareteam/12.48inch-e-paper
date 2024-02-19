@@ -47,6 +47,14 @@ elif(sys.argv[1] == 'B' or sys.argv[1] == 'b'):
     Inage_HEIGHT = epd12in48b.EPD_HEIGHT
     epd = epd12in48b.EPD()
 
+elif(sys.argv[1] == 'B_V2' or sys.argv[1] == 'b_v2'):
+    import epd12in48b_V2
+    print ('epd12in48b_V2')
+    Color_Type   = 2
+    Inage_WIDTH  = epd12in48b_V2.EPD_WIDTH
+    Inage_HEIGHT = epd12in48b_V2.EPD_HEIGHT
+    epd = epd12in48b_V2.EPD()
+
 print ("Please wait, it will take some time to download the data!!!!")  
 ##################################################
 Blackimage = Image.new("1", (Inage_WIDTH, Inage_HEIGHT), 255)
@@ -109,9 +117,7 @@ Tem  = Weather.Extract_Tem()
 OtherData  = Weather.Extract_OtherData()
 City  = Weather.Extract_City()
 RealTimeWeather  = Weather.Extract_RealTimeWeather()
-Weather.Extract_Map()
 
-# Weather.Extract_Map()
 # print Week
 # print Date
 # print TemHourly
@@ -119,7 +125,16 @@ Weather.Extract_Map()
 
 Display_Init()
 #############################################################
-Black.text((10,10), City, font = font80, fill = "BLUE")
+if(len(City)<30):
+    Black.text((10,10), City, font = font80, fill = "BLUE")
+elif(len(City)<40):
+    Black.text((10,10), City, font = font60, fill = "BLUE")
+elif(len(City)<60):
+    Black.text((10,10), City, font = font40, fill = "BLUE")
+elif(len(City)<80):
+    Black.text((10,10), City, font = font30, fill = "BLUE")
+else:
+    Black.text((10,10), City, font = font20, fill = "BLUE")
 Black.text((210,H_Proportion/3), RealTimeWeather, font = font50, fill = "BLUE")
 
 Painting.text((117-len(Tem)*50,H_Proportion/3),Tem, font = font110, fill = "BLUE")
@@ -144,7 +159,7 @@ for i in range(0, 6):
     Black.text((W_Proportion*i+117-len(Week[i])*9-len(Date[i])*9,H_Proportion + 0), 
             Week[i]+' '+Date[i], font = font25, fill = "BLUE")    
             
-    Black.text((W_Proportion*i+117-len(Wea[i])*9,H_Proportion + 40), 
+    Black.text((W_Proportion*i+90-(len(Wea[i])*9//2),H_Proportion + 40), 
             Wea[i], font = font25, fill = "BLUE")
             
     PNG = Image.open("Weather/"+ str(i) +".png")	
@@ -172,45 +187,26 @@ Black.line([(50-5,Inage_HEIGHT-H_Proportion+20+5),(50,Inage_HEIGHT-H_Proportion+
 Black.line([(50+5,Inage_HEIGHT-H_Proportion+20+5),(50,Inage_HEIGHT-H_Proportion+20)],
             fill = "BLUE",width = 3)
 
-temp = [None]*24
-for i in range(0, 24):
+temp = [None]*12
+for i in range(0, 12):
     temp[i]  = int(TemHourly[i])
 
 temp.sort()
 tem_max = int(temp[len(temp)-1]/3.0+1)*3
 tem_min = int(temp[0]/3)*3
-tem_Proportion =  int(240/(tem_max - tem_min))
+tem_Proportion = int(240/(tem_max - tem_min))
 
-s = 1
 # TimeHourly
-for i in range(0,24, 1):#w == 50
+for i in range(0,12, 1):#w == 100
     arc_dax = 4
-    y1 = Inage_HEIGHT-30-30-int((int(TemHourly[i])-tem_min)*tem_Proportion)
-    if(i!=23):
-        y2 = Inage_HEIGHT-30-30-int((int(TemHourly[i+1])-tem_min)*tem_Proportion)
-        Painting.line([(50+50*i,y1),(50+50*(i+1),y2)], fill = "BLUE",width = 3)
-    else :
-        Painting.text((50+50*i,y1-30), TemHourly[i]+u'°F', font = font20, fill = "BLUE")
-        Black.ellipse([50+50*i-arc_dax, y1-arc_dax, 50+50*i+arc_dax, y1+arc_dax], fill = "BLUE")
-        Black.text((50+50*i, Inage_HEIGHT-27), TimeHourly[i], font = font25, fill = "BLUE")
-        
+    y1 = Inage_HEIGHT-30-10-int((int(TemHourly[i])-tem_min)*tem_Proportion)
+    if(i!=11):
+        y2 = Inage_HEIGHT-30-10-int((int(TemHourly[i+1])-tem_min)*tem_Proportion)
+        Black.line([(100+100*i,y1),(100+100*(i+1),y2)], fill = "BLUE",width = 3)
     
-    if((int(TemHourly[i])>= temp[len(temp)-1] ) and s):
-        s=0
-        Painting.text((50+50*i,y1-30), TemHourly[i]+u'°F', font = font20, fill = "BLUE")
-        Black.ellipse([50+50*i-arc_dax, y1-arc_dax, 50+50*i+arc_dax, y1+arc_dax], fill = "BLUE")
-        Black.text((50+50*i, Inage_HEIGHT-27), TimeHourly[i], font = font25, fill = "BLUE")
-    elif((int(TemHourly[i])<= temp[0] ) and s):
-        s=0
-        Painting.text((50+50*i,y1-30), TemHourly[i]+u'°F', font = font20, fill = "BLUE")
-        Black.ellipse([50+50*i-arc_dax, y1-arc_dax, 50+50*i+arc_dax, y1+arc_dax], fill = "BLUE")
-        Black.text((50+50*i, Inage_HEIGHT-27), TimeHourly[i], font = font25, fill = "BLUE")
-    
-    if((i%3) == 0):
-        s=1
-        Painting.text((50+50*i,y1-30), TemHourly[i]+u'°F', font = font20, fill = "BLUE")
-        Black.ellipse([50+50*i-arc_dax, y1-arc_dax, 50+50*i+arc_dax, y1+arc_dax], fill = "BLUE")
-        Black.text((50+50*i, Inage_HEIGHT-27), TimeHourly[i], font = font25, fill = "BLUE")
+    Painting.text((100+100*i,y1-30), TemHourly[i]+u'°F', font = font20, fill = "BLUE")
+    Painting.ellipse([100+100*i-arc_dax, y1-arc_dax, 100+100*i+arc_dax, y1+arc_dax], fill = "BLUE")
+    Black.text((50+100*i, Inage_HEIGHT-27), TimeHourly[i], font = font25, fill = "BLUE")
         
 Black.text((10,Inage_HEIGHT-30-30),  str(tem_min+int((tem_max - tem_min)*0/4)), font = font30, fill = "BLUE")
 Black.text((10,Inage_HEIGHT-30-90),  str(tem_min+int((tem_max - tem_min)*1/4)), font = font30, fill = "BLUE")

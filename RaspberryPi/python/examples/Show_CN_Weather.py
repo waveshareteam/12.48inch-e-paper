@@ -56,6 +56,14 @@ elif(sys.argv[1] == 'B' or sys.argv[1] == 'b'):
     Inage_HEIGHT = epd12in48b.EPD_HEIGHT
     epd = epd12in48b.EPD()
 
+elif(sys.argv[1] == 'B_V2' or sys.argv[1] == 'b_v2'):
+    import epd12in48b_V2
+    print ('epd12in48b_V2')
+    Color_Type   = 2
+    Inage_WIDTH  = epd12in48b_V2.EPD_WIDTH
+    Inage_HEIGHT = epd12in48b_V2.EPD_HEIGHT
+    epd = epd12in48b_V2.EPD()
+
 Blackimage = Image.new("1", (Inage_WIDTH, Inage_HEIGHT), 255)
 Otherimage = Image.new("1", (Inage_WIDTH, Inage_HEIGHT), 255)
 Black = ImageDraw.Draw(Blackimage)
@@ -100,6 +108,7 @@ Air = Weather.Extract_Air()
 AirLevel = Weather.Extract_AirLevel()
 AirTips = Weather.Extract_AirTips()
 
+TodayTime = Weather.Extract_TodayTime()
 TodayHours = Weather.Extract_TodayHours()
 TodayWea = Weather.Extract_TodayWea()
 TodayTem = Weather.Extract_TodayTem()
@@ -164,9 +173,9 @@ font25 = ImageFont.truetype(picdir+"/Font.ttc",25)
 font70 = ImageFont.truetype(picdir+"/Font.ttc",70)
 
 #The input display needs to be determined to be converted to utf-8.
-Black.text((10,10), time.strftime('%Y') + u'年' + time.strftime('%m') +u'月'+ time.strftime('%d') \
-            + u'日' + "  " + Week[0], font = font25, fill = "BLUE")
+Black.text((10,10), TodayTime[0] + u'年' + TodayTime[1] +u'月'+ TodayTime[2] + u'日' + "  " + Week[0], font = font25, fill = "BLUE")
 Black.text((0+(180-len(City)*20),40), City, font = font40, fill = "BLUE")
+print(picdir+"/"+ BMP_table[0] +".bmp")
 BMP = Image.open(picdir+"/"+ BMP_table[0] +".bmp")	
 Blackimage.paste(BMP, (148,90)) 
 
@@ -177,10 +186,8 @@ Black.text((110,250), TemHigh[0]+ u'°C~' +TemLow[0]+ u'°C', font = font30, fil
 Other.text((0+(180-len(Wea[0])*15),290),Wea[0], font = font30, fill = "BLUE")
 Black.text((0+(180-len(Win[0])*15),330),Win[0], font = font30, fill = "BLUE")
 Black.text((0+(180-len(WinSpeed[0])*10),370),WinSpeed[0], font = font30, fill = "BLUE")  
-Black.rectangle([(132,409),(228,443)],fill = "BLUE")
-Black.text((195,410), Level[4], font = font30, fill = "WHITE")
-Black.text((140,410), Air, font = font30, fill = "WHITE")
-
+Black.rectangle([(125,409),(240,443)],fill = "BLUE")
+Black.text((130,410), "空气: "+AirLevel[0], font = font30, fill = "WHITE")
 Black.line([(360,40),(360,450)], fill = "BLUE",width = 3)
 
 ###############################################################################################
@@ -202,11 +209,10 @@ for i in range(1, 6):
         
     
     Black.text((360+(90-len(WinSpeed[i])*10)+(i-1)*180,370),WinSpeed[i], font = font30, fill = "BLUE")  
-    Black.rectangle([(430+(i-1)*180,409),(470+(i-1)*180,443)],fill = "BLUE")
-    Black.text((435+(i-1)*180,410), Level[9+(i-1)*5], font = font30, fill = "WHITE")
+    Black.rectangle([(395+(i-1)*180,409),(510+(i-1)*180,443)],fill = "BLUE")
+    Black.text((400+(i-1)*180,410), "空气: "+AirLevel[i], font = font30, fill = "WHITE")
 ###############################################################################################
 
-time_table_t=['8','11','14','17','20','23','2','5']
 time_table  = [None]*8
 Black.line([(70,520),(70,850)], fill = "BLUE",width = 3)
 Black.line([(70,850),(1280,850)], fill = "BLUE",width = 3)
@@ -220,36 +226,19 @@ Black.line([(1280,850),(1275,855)], fill = "BLUE",width = 3)
 Black.line([(1280,850),(1275,845)], fill = "BLUE",width = 3)
 Black.text((1250,855), u'时间', font = font25, fill = "BLUE")
 
-time_H = int(time.strftime('%H'))
-
-if(time_H>=8 and time_H<11):
-    k=0
-elif(time_H>=11 and time_H<14):
-    k=1
-elif(time_H>=14 and time_H<17):
-    k=2
-elif(time_H>=17 and time_H<20):
-    k=3
-elif(time_H>=20 and time_H<23):
-    k=4
-elif(time_H>=23 or  time_H<2):
-    k=5
-elif(time_H>=2 and time_H<5):
-    k=6
-elif(time_H>=5 and time_H<8):
-    k=7
+time_H = int(TodayTime[3])
 
 for i in range(0, 8):
-    if(k+i < 8):
-        time_table[i] =  time_table_t[k+i]
-    elif(k+i >= 8):
-        time_table[i] =  time_table_t[k+i-8]
+    if(time_H + i < 24):
+        time_table[i] =  str(time_H + i)
+    elif(time_H + i >= 24):
+        time_table[i] =  str(time_H + i - 24)
 
 Tem_table = [None]*8
 Tem_table[0] = -1
 Tem_table[0] = int(Tem[0])
 for i in range(1,8):
-    Tem_table[i] = int(TodayTem[k+i])
+    Tem_table[i] = int(TodayTem[time_H + i - 8])
 
 Tem_table.sort()
 Tem_max = int(Tem_table[len(Tem_table)-1]/3+1)*3
@@ -262,16 +251,22 @@ for i in range(1,8):
     Other.text((120+150*i,856), time_table[i]+u'点', font = font30, fill = "BLUE")
 
 for i in range(0,7):
-    y1 = 850-60-int((int(TodayTem[k+i])-Tem_min)*Tem_gap)
-    y2 = 850-60-int((int(TodayTem[k+i+1])-Tem_min)*Tem_gap)
+    if(i==0):
+        y1 = 850-60-int((int(Tem[0])-Tem_min)*Tem_gap)
+    else:
+        y1 = 850-60-int((int(TodayTem[time_H + i - 8])-Tem_min)*Tem_gap)
+    y2 = 850-60-int((int(TodayTem[time_H + i - 8 + 1])-Tem_min)*Tem_gap)
     arc_dax = 4
-    Other.ellipse([120+150*i-arc_dax, y1-arc_dax, 120+150*i+arc_dax, y1+arc_dax], fill = "BLUE")
-    Other.ellipse([120+150*(i+1)-arc_dax, y2-arc_dax, 120+150*(i+1)+arc_dax, y2+arc_dax], fill = "BLUE")
-    Other.line([(120+150*i,y1),(120+150*(i+1),y2)], fill = "BLUE",width = 3)
+    Black.ellipse([120+150*i-arc_dax, y1-arc_dax, 120+150*i+arc_dax, y1+arc_dax], fill = "BLUE")
+    Black.ellipse([120+150*(i+1)-arc_dax, y2-arc_dax, 120+150*(i+1)+arc_dax, y2+arc_dax], fill = "BLUE")
+    Black.line([(120+150*i,y1),(120+150*(i+1),y2)], fill = "BLUE",width = 3)
     
-    Other.text((120+150*i,y1-30), TodayTem[k+i]+u'°C', font = font25, fill = "BLUE")
+    if(i==0):
+        Other.text((120+150*i,y1-30), Tem[0]+u'°C', font = font25, fill = "BLUE")
+    else:
+        Other.text((120+150*i,y1-30), TodayTem[time_H + i - 8]+u'°C', font = font25, fill = "BLUE")
     if(i==6):
-        Other.text((120+150*(i+1),y2-30), TodayTem[k+i+1]+u'°C', font = font25, fill = "BLUE")
+        Other.text((120+150*(i+1),y2-30), TodayTem[time_H + i - 8 + 1]+u'°C', font = font25, fill = "BLUE")
 Other.text((20,850-60),  str(Tem_min+int((Tem_max - Tem_min)*0/4)), font = font30, fill = "BLUE")
 Other.text((20,850-120), str(Tem_min+int((Tem_max - Tem_min)*1/4)), font = font30, fill = "BLUE")
 Other.text((20,850-180), str(Tem_min+int((Tem_max - Tem_min)*2/4)), font = font30, fill = "BLUE")

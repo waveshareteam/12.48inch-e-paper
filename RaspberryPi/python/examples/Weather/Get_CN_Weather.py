@@ -17,7 +17,10 @@ import sys
 import re
 import requests# sudo python3 -m pip install requests
 
-ur ='https://www.tianqiapi.com/api/?version=v1&&appid=[0]&appsecret=[0]'
+# This is the test account provided by the official website, with a limited number of times per day, 
+# and the information is also the information several hours ago, so it is recommended to modify it into your own
+ur ='http://v1.yiketianqi.com/api?unescape=1&version=v91&appid=43656176&appsecret=I42og6Lm&ext=&cityid=&city='
+# file_path = "output.html"
 
 def Get_Html(Url):#Timeout retry (failed if not successful 3 times)
     i = 0
@@ -34,8 +37,10 @@ def Get_Html(Url):#Timeout retry (failed if not successful 3 times)
 
 class Weather:
     def __init__(self):
-        self.Weather = Get_Html(ur).text.encode('utf-8').decode("unicode_escape") #utf-8
-        
+        self.Weather = Get_Html(ur).text.encode('utf-8').decode("utf-8") #utf-8
+        # with open(file_path, 'w') as file:
+        #     for line in self.Weather:
+        #         file.write(line)
         self.Day_Data_Passage = (''.join(re.findall(r'\w*"date":"[\s\S]*?"hours"', self.Weather))).encode('utf-8').decode('utf-8')
         self.Day_Data_Passage = re.sub(r'"hours"',' ',self.Day_Data_Passage)
         if(len(self.Day_Data_Passage) == 0):
@@ -80,8 +85,7 @@ class Weather:
         return tem
         
     def Extract_Tem(self):
-        tem_t = (''.join(re.findall(r'\w*"tem":"[\s\S]*?,', self.Day_Data_Passage)))
-        tem_t = re.sub(r'[^0-9,]','', re.sub('"tem":"', '', tem_t)).strip()
+        tem_t = (','.join(re.findall(r'"tem":"(\d+)', self.Day_Data_Passage)))
         tem   = re.split(',', tem_t)
         return tem
         
@@ -104,7 +108,8 @@ class Weather:
         
     def Extract_AirLevel(self):
         air_level_t =  (''.join(re.findall(r'\w*"air_level":"[\s\S]*?,', self.Day_Data_Passage)))
-        air_level = re.sub('"', ' ', re.sub(',', '', re.sub('"air_level":', ' ', air_level_t))).strip()
+        air_level_t = re.sub('"', '', re.sub('"air_level":', '', air_level_t)).strip()
+        air_level = re.split(',', air_level_t)
         return air_level
         
     def Extract_AirTips(self):
@@ -115,7 +120,17 @@ class Weather:
     ##################################################################################
     #7 day
 
-
+    def Extract_TodayTime(self):
+        Time_t = (''.join(re.findall(r'\w*"update_time":"[\s\S]*?"data"', self.Weather))).encode('utf-8').decode('utf-8')
+        pattern = r'"update_time":"(\d{4})-(\d{2})-(\d{2}) (\d{2}):\d{2}:\d{2}"'
+        match = re.search(pattern, Time_t)
+        if match:
+            time = [match.group(1), match.group(2), match.group(3), match.group(4)]
+            return time
+        else:
+            print("未找到匹配的时间")
+            return None
+        
     def Extract_TodayHours(self):
         hours_t = (''.join(re.findall(r'\w*"hours":[\s\S]*?}]', self.Weather))).encode('utf-8').decode('utf-8')
         hours_day_t = (''.join(re.findall(r'\w*"day":"[\s\S]*?,', hours_t)))
